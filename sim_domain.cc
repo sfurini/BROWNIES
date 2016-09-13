@@ -82,12 +82,8 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 
 void create_simulation_domain(){
-	
-	
 	PRM.MAX_VEL=1.5e4;	// 2e3
 	PRM.MAX_FLIGHT=PRM.MAX_VEL*PRM.DELTA_T;
-		
-	
 	
 	if(PRM.SEED!=0){
 		srand(PRM.SEED);
@@ -183,8 +179,6 @@ void create_simulation_domain(){
 		PRM.ions_to_simulate.push_back(false);
 	}
 	
-	
-	
 	if(isnormal(PRM.CONC_LEFT_NACL) || isnormal(PRM.CONC_RIGHT_NACL)){
 		PRM.ions_to_simulate[3]=true;
 	}
@@ -229,7 +223,6 @@ void create_simulation_domain(){
 			PRM.CONC_RIGHT_MGCL2=0;
 		}
 	}
-	
 	
 	if(isnormal(PRM.CONC_LEFT_NACL) || isnormal(PRM.CONC_RIGHT_NACL) || isnormal(PRM.CONC_LEFT_KCL) || isnormal(PRM.CONC_RIGHT_KCL) || isnormal(PRM.CONC_LEFT_CACL2) || isnormal(PRM.CONC_RIGHT_CACL2) || isnormal(PRM.CONC_LEFT_MGCL2) || isnormal(PRM.CONC_RIGHT_MGCL2)){
 		PRM.ions_to_simulate[17]=true;
@@ -543,10 +536,8 @@ void create_simulation_domain(){
 	
 	PRM.FIRST_STEP=-(PRM.PREP_STEPS+PRM.HISTORY_SIZE);
 	
-	
 	create_membrane_charges();
-	
-	
+
 	return;
 }
 
@@ -962,8 +953,6 @@ void create_membrane_charges(){
 	
 	membrane_charges.clear();
 
-	cout << "a" << endl;
-	
 	Charge c;
 	
 	double angle;
@@ -993,8 +982,6 @@ void create_membrane_charges(){
 
 	}
 	
-	cout << "b" << endl;
-	
 	if(fileExists(PRM.FIXED_CHARGES_FILE)){
 
 		string buffer="";
@@ -1014,9 +1001,9 @@ void create_membrane_charges(){
 				if(buffer.substr(0,1).compare("#")!=0 && countTokens(buffer, " ")==4){
 					c.reset_charge();
 					
-					c.x=1e-12*atof(getTokenbyNumber(buffer, " ", 1).c_str());
-					c.y=1e-12*atof(getTokenbyNumber(buffer, " ", 2).c_str());
-					c.z=1e-12*atof(getTokenbyNumber(buffer, " ", 3).c_str());
+					c.x=1e-10*atof(getTokenbyNumber(buffer, " ", 1).c_str());
+					c.y=1e-10*atof(getTokenbyNumber(buffer, " ", 2).c_str());
+					c.z=1e-10*atof(getTokenbyNumber(buffer, " ", 3).c_str());
 					c.charge=Q*atof(getTokenbyNumber(buffer, " ", 4).c_str());
 					c.valence=atof(getTokenbyNumber(buffer, " ", 4).c_str());
 					c.DW_charge=c.charge/PRM.EPS_MEM;
@@ -1053,26 +1040,5 @@ void create_membrane_charges(){
 		
 	}
 	
-	cout << "c" << endl;
-		
 	return;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

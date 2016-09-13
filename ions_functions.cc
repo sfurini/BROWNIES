@@ -562,9 +562,7 @@ void initialize_ion_velocity(Ion& ion){
 }
 
 void compute_diffusion_coefficients(){
-	
 	cout << "compute diffusion coefficient" <<endl;
-	
 	double R_MIN=10000;
 	double R_MAX=-10000;
 	for(int i=0; i<limits.size(); i++){
@@ -575,20 +573,15 @@ void compute_diffusion_coefficients(){
 			R_MAX=limits.at(i);
 		}
 	}
-	
-	
 	vector <double> aux_vec;
 	for(int i=0; i<NUM_OF_IONIC_SPECIES; i++){
 		Ion ion_i(i);
 		aux_vec.clear();
-		
 		if(PRM.ions_to_simulate.at(i) && ion_i.name.substr(0,1).compare("J")!=0){
-			
 			for(int z=PRM.MIN_Z; z<=PRM.MAX_Z; z++){
 				double diff_coeff=0;
 				if(z<PRM.Z_MOUTH_LEFT || z>PRM.Z_MOUTH_RIGHT){
 					diff_coeff=ion_i.diffusion_coeff;
-
 				}
 				else{
 					int ind_on_lim=z-PRM.Z_MOUTH_LEFT;
@@ -596,15 +589,10 @@ void compute_diffusion_coefficients(){
 				}
 				aux_vec.push_back(diff_coeff);
 			}
-			
-
 		}
-
-		
 		diffusion_coefficients.push_back(aux_vec);
 		aux_vec.clear();
 	}
-	
 	return;
 }
 

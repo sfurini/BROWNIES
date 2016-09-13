@@ -1,0 +1,27 @@
+BROWNIES -i input.conf
+
+Format input.conf
+	PARAMETER_NAME = PARAMETER_VALUE
+	Lines that start with '#' are comments
+	Lines without a character equal to '=' are ignored
+
+Output files
+
+.curr_ZT
+	time	istantaneus_current_ion_i	average_current_ion_i
+	[s]	[A]				[A]
+
+.flux
+	z	flux_ion_i	concentration_ion_i	velocity_ion_i
+	[Å]	[ions/s]	[ion/Å(?)]		[m/s]
+
+_draw_sim_domain.tcl
+	Use in VMD to display the simulation domain
+
+_draw_tiles.tcl
+	Use in VMD to display the boundary surfaces
+
+_mem_charges.pdbrq
+	Fixed charges
+	Problema di dimensioni con gli altri file VMD (output o interno ?)
+

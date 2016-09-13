@@ -545,10 +545,8 @@ void do_initial_step(){
 	
 	string hhh="\nOK FATTO "; 	
 	string hhh2="\nOK FATTO "; 	
-
 		
 		if(CORRECT){
-			
 			
 			//initialize_ions_left_cell();
 			//initialize_ions_right_cell();
@@ -569,7 +567,6 @@ void do_initial_step(){
 			}
 			cout << "andata..." <<endl;
 			cout << "number of ions: " << NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP] <<endl;
-			
 			
 			langevin_step_0();
 			cout << "1..." <<endl;

@@ -129,19 +129,11 @@ void Square_Matrix_Mult(vector < vector < double > >& A, vector < vector < doubl
 }
 
 void create_surfaces(){
-	
 	if(PRM.SIM_TYPE.compare("PORE")==0){
-		
 		double PORE_RADIUS=0;
-		
-		
 		// interpolation of the profile with NUM_OF_DIV parameter
 		cout << "create_channel_surfaces............"<<endl;
 		surfaces.clear();
-		
-		
-		
-		
 		vector <double> zetas; 
 		vector <double> erres; 
 		//define initial limits guess
@@ -149,39 +141,30 @@ void create_surfaces(){
 			zetas.push_back(i);
 			erres.push_back(16000);
 		}
-			
 		double LEFT_VESTIBULE_MAX_CHANNEL_RADIUS=PRM.LEFT_VESTIBULE_MIN_CHANNEL_RADIUS+PRM.LEFT_VESTIBULE_CURVATURE_RADIUS;
 		double RIGHT_VESTIBULE_MAX_CHANNEL_RADIUS=PRM.RIGHT_VESTIBULE_MIN_CHANNEL_RADIUS+PRM.RIGHT_VESTIBULE_CURVATURE_RADIUS;
-		
 		double center_of_circle_z=PRM.Z_MOUTH_LEFT+PRM.LEFT_VESTIBULE_CURVATURE_RADIUS;
 		double center_of_circle_r=PRM.LEFT_VESTIBULE_MIN_CHANNEL_RADIUS+PRM.LEFT_VESTIBULE_CURVATURE_RADIUS;
-		
 		for(int i=0; i<=int(PRM.LEFT_VESTIBULE_CURVATURE_RADIUS); i++){
 			double coseno=PRM.Z_MOUTH_LEFT+double(i)-center_of_circle_z;
 			coseno=coseno/PRM.LEFT_VESTIBULE_CURVATURE_RADIUS;
-			
 			double angle=acos(coseno);
 			double seno=sin(angle);
 			erres.at(i)=center_of_circle_r-seno*PRM.LEFT_VESTIBULE_CURVATURE_RADIUS;
 		}
-
 		//adjust limits at right mouth
 		center_of_circle_z=PRM.Z_MOUTH_RIGHT-PRM.RIGHT_VESTIBULE_CURVATURE_RADIUS;
 		center_of_circle_r=PRM.RIGHT_VESTIBULE_MIN_CHANNEL_RADIUS+PRM.RIGHT_VESTIBULE_CURVATURE_RADIUS;
-		
 		for(int i=erres.size()-int(PRM.RIGHT_VESTIBULE_CURVATURE_RADIUS); i<=erres.size()-1; i++){
 			double coseno=PRM.Z_MOUTH_LEFT+double(i)-center_of_circle_z;
 			coseno=coseno/PRM.RIGHT_VESTIBULE_CURVATURE_RADIUS;
-			
 			double angle=acos(coseno);
 			double seno=sin(angle);
 			erres.at(i)=center_of_circle_r-seno*PRM.RIGHT_VESTIBULE_CURVATURE_RADIUS;
 		}
-		
 //==========================================================================================
 //==========================================================================================
 //		working on channel_profile_points
-		
 		for(int i=PRM.channel_profile_points.size()-1; i>=0; i--){
 			if(PRM.channel_profile_points.at(i).z<PRM.Z_MOUTH_LEFT+PRM.LEFT_VESTIBULE_CURVATURE_RADIUS || PRM.channel_profile_points.at(i).z>PRM.Z_MOUTH_RIGHT-PRM.RIGHT_VESTIBULE_CURVATURE_RADIUS){
 				PRM.channel_profile_points.erase(PRM.channel_profile_points.begin()+i);
@@ -1387,26 +1370,16 @@ void create_surfaces(){
 		
 	}
 		
-	
-	
-	
-	
-	
-	
-	
 
 	else if(PRM.SIM_TYPE.compare("MEMBRANE")==0){
 		cout << "PRM.SIM_TYPE=MEMBRANE" <<endl;
 		create_membrane_tiles();
 	}
 		
-
 	PRM.NUMBER_OF_TILES=surfaces.size();
 	PRM.NUMBER_OF_SUBTILES_PER_TILE=subSurfaces.at(0).size();
-
 	cout << 	"NUMBER_OF_TILES: " << PRM.NUMBER_OF_TILES<<endl;
 	cout << 	"NUMBER_OF_SUBTILES_PER_TILE: " << PRM.NUMBER_OF_SUBTILES_PER_TILE<<endl;
-	
 	if(surfaces.empty()){
 		cerr << "There are no surfaces!!!"<<endl;
 		exit(1);
@@ -1415,16 +1388,12 @@ void create_surfaces(){
 		//~ print_surfaces(); // write the discretizion tiles to output files
 		//~ print_subSurfaces();		
 	}
-	
-
 	double delta_epsilon=PRM.EPS_MEM-PRM.EPS_W;
 	double mean_epsilon=(PRM.EPS_MEM+PRM.EPS_W)/double(2.00);
 	double den_for_K=double(4.00)*M_PI*mean_epsilon;
 	double K_for_integral=delta_epsilon/den_for_K;
-
 	vector<double> aux_double_vec;
 	double aux_double=0.00;	
-
 	for(int row=0; row<surfaces.size(); row++){
 		aux_double_vec.clear();
 		for(int col=0; col<surfaces.size(); col++){
@@ -1594,10 +1563,7 @@ void create_surfaces(){
 		//~ IDENTITY_MATRIX_A.push_back(aux_double_vec);
 		//~ aux_double_vec.clear();
 	//~ }
-
 	//~ Square_Matrix_Mult(MATRIX_A, INVERSE_MATRIX_A, IDENTITY_MATRIX_A);
-
-
 	//~ for(int row=0; row<ORDER_OF_MATRIX; row++){
 
 		//~ for(int col=0; col<ORDER_OF_MATRIX; col++){
@@ -1615,7 +1581,6 @@ void create_surfaces(){
 			//~ }
 		//~ }
 	//~ }
-
 	//~ for(int row=0; row<ORDER_OF_MATRIX; row++){
 		//~ for(int col=0; col<ORDER_OF_MATRIX; col++){
 			//~ if(INVERSE_MATRIX_A.at(row).at(col)!=INVERSE_MATRIX_A.at(row).at(col) || isinf(INVERSE_MATRIX_A.at(row).at(col)) || isnan(INVERSE_MATRIX_A.at(row).at(col))){

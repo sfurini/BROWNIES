@@ -814,16 +814,13 @@ double energy_other_at_distance(double distance, Ion i1, Ion i2){
 
 
 void create_EPFFs(){
-
 	for(int i=0; i<20000; i++){
 		ENERGY_C[i]=energy_C_at_distance(double(i));
 		POTENTIAL_C[i]=potential_C_at_distance(double(i));
 		FIELD_C[i]=field_C_at_distance(double(i));
 		FORCE_C[i]=force_C_at_distance(double(i));
 	}
-	
-//===========================================	
-														/*
+/*===========================================	
   kind  name
 	0		O		OXYGEN
 	1		H		HYDROGEN
@@ -937,8 +934,6 @@ void create_EPFFs(){
 														*/
 //===========================================	
 
-
-
 //==================================== short-range - begin
 	vector < vector < double > > aux_vec1;
 	vector < double > aux_vec2;
@@ -1001,7 +996,6 @@ void create_EPFFs(){
 		aux_vec1.clear();
 	}
 //==================================== short-range - end
-
 
 //==================================== other - begin
 	aux_vec1.clear();
@@ -1069,7 +1063,6 @@ void create_EPFFs(){
 		aux_vec1.clear();
 	}
 //==================================== other - end	
-	
 	return;
 }
 

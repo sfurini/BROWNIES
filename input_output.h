@@ -95,8 +95,6 @@ using namespace std;
 
 void retrieve_parameters(string conf_file);
 
-void retrieve_ions_parameters(string conf_file);
-
 void check_parameters();
 
 void print_PDB_filter_file();

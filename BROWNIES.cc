@@ -125,36 +125,20 @@ int main(int argc,char *argv[]){
 	for(int i=0; i<argc; i++){
 		arguments.push_back(string(argv[i]));
 	}
-	if(arguments.size()==2){
-		if(arguments.at(1).compare("-h")==0){
-			// help needed..
-		}
-		else {
-			cout << "USAGE:"<<endl;
-			cout << "1) ./BROWNIES -h\t\t\t\t\tfor help"<<endl;
-			cout << "2) ./BROWNIES -i path to .conf file\t\t\tto run a simulation"<<endl;
-			exit(1);
-		}
-	}
-	else if(arguments.size()==3){
-		if(arguments.at(1).compare("-i")==0){
-			retrieve_parameters(arguments.at(2));
-			retrieve_ions_parameters(arguments.at(2));
-			check_parameters();
-		}
-		else {
-			cout << "USAGE:"<<endl;
-			cout << "1) ./BROWNIES -h\t\t\t\t\tfor help"<<endl;
-			cout << "2) ./BROWNIES -i path to .conf file\t\t\tto run a simulation"<<endl;
-			exit(1);
-		}
-	} 
-	else {
-		cout << "USAGE:"<<endl;
-		cout << "1) ./BROWNIES -h\t\t\t\t\tfor help"<<endl;
-		cout << "2) ./BROWNIES -i path to .conf file\t\t\tto run a simulation"<<endl;
+	if(arguments.size()!=3){
+		cerr << "USAGE:"<<endl;
+		cerr << "1) ./BROWNIES -h\t\t\t\t\tfor help"<<endl;
+		cerr << "2) ./BROWNIES -i path to .conf file\t\t\tto run a simulation"<<endl;
 		exit(1);
 	}
+	if(arguments.at(1).compare("-i")!=0){
+		cerr << "USAGE:"<<endl;
+		cerr << "1) ./BROWNIES -h\t\t\t\t\tfor help"<<endl;
+		cerr << "2) ./BROWNIES -i path to .conf file\t\t\tto run a simulation"<<endl;
+		exit(1);
+	}
+	retrieve_parameters(arguments.at(2));
+	check_parameters();
 	
 //###############################################
 //		CREATE SIMULATION DOMAIN
@@ -189,7 +173,7 @@ int main(int argc,char *argv[]){
 		create_surfaces();
 		MATRIX_A.clear();
 		adjust_surfaces();
-		compute_SR_dielectric_boundary();		
+		compute_SR_dielectric_boundary();
 		PRM.NUM_OF_SUB_DIV=subSurfaces.at(0).size();
 	}
 	
@@ -223,6 +207,10 @@ int main(int argc,char *argv[]){
 	if(PRM.SIM_TYPE.compare("PORE")==0 && PRM.DIFF_COEFF_IN_CHANNEL!=1){
 		compute_diffusion_coefficients();
 	}
+
+//###############################################
+//		OUTPUT PARAMETERS
+//###############################################	
 	cout << PRM;
 	
 //###############################################
@@ -252,7 +240,6 @@ int main(int argc,char *argv[]){
 //###############################################
 //		MAKE FIRST STEP
 //###############################################
-
 	int MAX_NUMBER_OF_IONS_PER_STEP=estimate_max_number_of_ions();
 	cout << "MAX_NUMBER_OF_IONS_PER_STEP:\t" << MAX_NUMBER_OF_IONS_PER_STEP << endl;
 	for(int i=0; i<PRM.HISTORY_SIZE; i++){
@@ -539,7 +526,7 @@ int main(int argc,char *argv[]){
 	}
 //=================================================================//		
 //#################################################################//		
-//####		SIMULATION STOPS HERE!  						   ####//
+//####		     SIMULATION STOPS HERE!	               ####//
 //#################################################################//
 //=================================================================//		
 	cout << "simulation ended"<<endl;

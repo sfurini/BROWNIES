@@ -93,7 +93,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 #include "sim_structures.h"
 
 
-
 void retrieve_parameters(string conf_file){
 	if(fileExists(conf_file)){
 		if(verifyExtension(conf_file, "conf")){
@@ -104,7 +103,7 @@ void retrieve_parameters(string conf_file){
 			fin.open(tfn, ifstream::in);  
 			if(!fin){
 				cout <<"ERROR: it is not possible to open the file: " << conf_file << endl;
-				exit(4);
+				exit(2);
 			}
 			while(!fin.eof()){
 				if(getline(fin, buffer)){
@@ -127,7 +126,6 @@ void retrieve_parameters(string conf_file){
 							else if(getTokenbyNumber(buffer, "=", 1).compare("PREFIX")==0){
 								PRM.PREFIX=getTokenbyNumber(buffer, "=", 2);
 							}
-						
 							else if(getTokenbyNumber(buffer, "=", 1).compare("CONTROL_CELL_WIDTH")==0){
 								PRM.CONTROL_CELL_WIDTH=double(100.00)*atof(getTokenbyNumber(buffer, "=", 2).c_str());
 							}
@@ -245,7 +243,6 @@ void retrieve_parameters(string conf_file){
 							else if(getTokenbyNumber(buffer, "=", 1).compare("currents_ZT")==0){
 								PRM.currents_ZT=atoi(getTokenbyNumber(buffer, "=", 2).c_str());
 							}
-							
 							else if(getTokenbyNumber(buffer, "=", 1).compare("LEFT_VESTIBULE_CURVATURE_RADIUS")==0){
 								PRM.LEFT_VESTIBULE_CURVATURE_RADIUS=double(100.00)*atof(getTokenbyNumber(buffer, "=", 2).c_str());
 							}
@@ -657,6 +654,505 @@ void retrieve_parameters(string conf_file){
 								PRM.BOX6_N6=atoi(getTokenbyNumber(buffer, "=", 2).c_str());
 							}
 //=============================================================================== ION BOX6 end						
+//=============================================================================== ION PARAMETERS begin
+							else if(getTokenbyNumber(buffer, "=", 1).compare("K_VALENCE")==0){
+								K_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("K_RADIUS")==0){
+								K_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("K_DIFF_COEFF")==0){
+								K_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("K_MASS")==0){
+								K_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("NA_VALENCE")==0){
+								NA_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("NA_RADIUS")==0){
+								NA_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("NA_DIFF_COEFF")==0){
+								NA_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("NA_MASS")==0){
+								NA_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("CA_VALENCE")==0){
+								CA_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("CA_RADIUS")==0){
+								CA_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("CA_DIFF_COEFF")==0){
+								CA_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("CA_MASS")==0){
+								CA_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("MG_VALENCE")==0){
+								MG_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("MG_RADIUS")==0){
+								MG_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("MG_DIFF_COEFF")==0){
+								MG_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("MG_MASS")==0){
+								MG_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("CL_VALENCE")==0){
+								CL_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("CL_RADIUS")==0){
+								CL_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("CL_DIFF_COEFF")==0){
+								CL_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("CL_MASS")==0){
+								CL_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION1_VALENCE")==0){
+								BOX1_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION1_RADIUS")==0){
+								BOX1_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION1_DIFF_COEFF")==0){
+								BOX1_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION1_MASS")==0){
+								BOX1_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION2_VALENCE")==0){
+								BOX1_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION2_RADIUS")==0){
+								BOX1_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION2_DIFF_COEFF")==0){
+								BOX1_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION2_MASS")==0){
+								BOX1_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION3_VALENCE")==0){
+								BOX1_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION3_RADIUS")==0){
+								BOX1_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION3_DIFF_COEFF")==0){
+								BOX1_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION3_MASS")==0){
+								BOX1_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION4_VALENCE")==0){
+								BOX1_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION4_RADIUS")==0){
+								BOX1_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION4_DIFF_COEFF")==0){
+								BOX1_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION4_MASS")==0){
+								BOX1_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION5_VALENCE")==0){
+								BOX1_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION5_RADIUS")==0){
+								BOX1_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION5_DIFF_COEFF")==0){
+								BOX1_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION5_MASS")==0){
+								BOX1_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION6_VALENCE")==0){
+								BOX1_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION6_RADIUS")==0){
+								BOX1_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION6_DIFF_COEFF")==0){
+								BOX1_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION6_MASS")==0){
+								BOX1_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION1_VALENCE")==0){
+								BOX2_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION1_RADIUS")==0){
+								BOX2_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION1_DIFF_COEFF")==0){
+								BOX2_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION1_MASS")==0){
+								BOX2_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION2_VALENCE")==0){
+								BOX2_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION2_RADIUS")==0){
+								BOX2_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION2_DIFF_COEFF")==0){
+								BOX2_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION2_MASS")==0){
+								BOX2_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION3_VALENCE")==0){
+								BOX2_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION3_RADIUS")==0){
+								BOX2_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION3_DIFF_COEFF")==0){
+								BOX2_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION3_MASS")==0){
+								BOX2_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION4_VALENCE")==0){
+								BOX2_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION4_RADIUS")==0){
+								BOX2_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION4_DIFF_COEFF")==0){
+								BOX2_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION4_MASS")==0){
+								BOX2_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION5_VALENCE")==0){
+								BOX2_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION5_RADIUS")==0){
+								BOX2_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION5_DIFF_COEFF")==0){
+								BOX2_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION5_MASS")==0){
+								BOX2_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION6_VALENCE")==0){
+								BOX2_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION6_RADIUS")==0){
+								BOX2_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION6_DIFF_COEFF")==0){
+								BOX2_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION6_MASS")==0){
+								BOX2_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION1_VALENCE")==0){
+								BOX3_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION1_RADIUS")==0){
+								BOX3_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION1_DIFF_COEFF")==0){
+								BOX3_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION1_MASS")==0){
+								BOX3_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION2_VALENCE")==0){
+								BOX3_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION2_RADIUS")==0){
+								BOX3_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION2_DIFF_COEFF")==0){
+								BOX3_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION2_MASS")==0){
+								BOX3_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION3_VALENCE")==0){
+								BOX3_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION3_RADIUS")==0){
+								BOX3_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION3_DIFF_COEFF")==0){
+								BOX3_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION3_MASS")==0){
+								BOX3_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION4_VALENCE")==0){
+								BOX3_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION4_RADIUS")==0){
+								BOX3_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION4_DIFF_COEFF")==0){
+								BOX3_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION4_MASS")==0){
+								BOX3_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION5_VALENCE")==0){
+								BOX3_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION5_RADIUS")==0){
+								BOX3_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION5_DIFF_COEFF")==0){
+								BOX3_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION5_MASS")==0){
+								BOX3_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION6_VALENCE")==0){
+								BOX3_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION6_RADIUS")==0){
+								BOX3_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION6_DIFF_COEFF")==0){
+								BOX3_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION6_MASS")==0){
+								BOX3_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION1_VALENCE")==0){
+								BOX4_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION1_RADIUS")==0){
+								BOX4_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION1_DIFF_COEFF")==0){
+								BOX4_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION1_MASS")==0){
+								BOX4_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION2_VALENCE")==0){
+								BOX4_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION2_RADIUS")==0){
+								BOX4_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION2_DIFF_COEFF")==0){
+								BOX4_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION2_MASS")==0){
+								BOX4_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION3_VALENCE")==0){
+								BOX4_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION3_RADIUS")==0){
+								BOX4_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION3_DIFF_COEFF")==0){
+								BOX4_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION3_MASS")==0){
+								BOX4_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION4_VALENCE")==0){
+								BOX4_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION4_RADIUS")==0){
+								BOX4_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION4_DIFF_COEFF")==0){
+								BOX4_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION4_MASS")==0){
+								BOX4_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION5_VALENCE")==0){
+								BOX4_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION5_RADIUS")==0){
+								BOX4_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION5_DIFF_COEFF")==0){
+								BOX4_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION5_MASS")==0){
+								BOX4_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION6_VALENCE")==0){
+								BOX4_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION6_RADIUS")==0){
+								BOX4_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION6_DIFF_COEFF")==0){
+								BOX4_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION6_MASS")==0){
+								BOX4_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION1_VALENCE")==0){
+								BOX5_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION1_RADIUS")==0){
+								BOX5_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION1_DIFF_COEFF")==0){
+								BOX5_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION1_MASS")==0){
+								BOX5_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION2_VALENCE")==0){
+								BOX5_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION2_RADIUS")==0){
+								BOX5_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION2_DIFF_COEFF")==0){
+								BOX5_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION2_MASS")==0){
+								BOX5_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION3_VALENCE")==0){
+								BOX5_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION3_RADIUS")==0){
+								BOX5_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION3_DIFF_COEFF")==0){
+								BOX5_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION3_MASS")==0){
+								BOX5_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION4_VALENCE")==0){
+								BOX5_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION4_RADIUS")==0){
+								BOX5_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION4_DIFF_COEFF")==0){
+								BOX5_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION4_MASS")==0){
+								BOX5_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION5_VALENCE")==0){
+								BOX5_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION5_RADIUS")==0){
+								BOX5_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION5_DIFF_COEFF")==0){
+								BOX5_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION5_MASS")==0){
+								BOX5_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION6_VALENCE")==0){
+								BOX5_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION6_RADIUS")==0){
+								BOX5_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION6_DIFF_COEFF")==0){
+								BOX5_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION6_MASS")==0){
+								BOX5_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION1_VALENCE")==0){
+								BOX6_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION1_RADIUS")==0){
+								BOX6_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION1_DIFF_COEFF")==0){
+								BOX6_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION1_MASS")==0){
+								BOX6_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION2_VALENCE")==0){
+								BOX6_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION2_RADIUS")==0){
+								BOX6_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION2_DIFF_COEFF")==0){
+								BOX6_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION2_MASS")==0){
+								BOX6_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION3_VALENCE")==0){
+								BOX6_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION3_RADIUS")==0){
+								BOX6_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION3_DIFF_COEFF")==0){
+								BOX6_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION3_MASS")==0){
+								BOX6_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION4_VALENCE")==0){
+								BOX6_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION4_RADIUS")==0){
+								BOX6_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION4_DIFF_COEFF")==0){
+								BOX6_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION4_MASS")==0){
+								BOX6_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION5_VALENCE")==0){
+								BOX6_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION5_RADIUS")==0){
+								BOX6_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION5_DIFF_COEFF")==0){
+								BOX6_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION5_MASS")==0){
+								BOX6_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION6_VALENCE")==0){
+								BOX6_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION6_RADIUS")==0){
+								BOX6_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION6_DIFF_COEFF")==0){
+								BOX6_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION6_MASS")==0){
+								BOX6_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
+//=============================================================================== ION PARAMETERS end
+							else {
+								cerr << "The format of the file " << conf_file << " is not correct" << endl;
+								cerr << "Line: " << buffer << endl;
+								exit(2);
+							}
 						}
 					}
 				}					
@@ -664,12 +1160,12 @@ void retrieve_parameters(string conf_file){
 			fin.close();
 		}
 		else{
-			cout << "The file " << conf_file << " is not a regular .conf file. Please give a correct path to .conf file" <<endl;
-			exit(3);
+			cerr << "The file " << conf_file << " is not a regular .conf file. Please give a correct path to .conf file" << endl;
+			exit(2);
 		}
 	}
 	else{
-		cout << "The file " << conf_file << " does not exist. Please give a correct path to .conf file" <<endl;
+		cerr << "The file " << conf_file << " does not exist. Please give a correct path to .conf file" <<endl;
 		exit(2);
 	}
 	PRM.SIM_STEPS=PRM.SIM_STEPS+PRM.HISTORY_SIZE;
@@ -1447,41 +1943,38 @@ void print_vmd_channel_files(){
     int i;
 
     string fileout2 = PRM.PREFIX + "_draw_sim_domain.tcl";
-	createFile(fileout2);
-	char *tfn2 = new char[fileout2.length()+1];
-	strcpy(tfn2, fileout2.c_str());     
-	ofstream fout2(tfn2);
-    
+    createFile(fileout2);
+    char *tfn2 = new char[fileout2.length()+1];
+    strcpy(tfn2, fileout2.c_str());     
+    ofstream fout2(tfn2);
+
     if(surfaces.empty()){
-        
     }
-	else{
-    
-		string fileout = PRM.PREFIX + "_draw_tiles.tcl";
-		createFile(fileout);
-		char *tfn = new char[fileout.length()+1];
-		strcpy(tfn, fileout.c_str());     
-		ofstream fout(tfn);
+    else{
+	string fileout = PRM.PREFIX + "_draw_tiles.tcl";
+	createFile(fileout);
+	char *tfn = new char[fileout.length()+1];
+	strcpy(tfn, fileout.c_str());     
+	ofstream fout(tfn);
+	
+	
+	fout << "draw materials off\ndraw color 17"<< endl;
+	if(!surfaces.empty()){
 		
-		
-		fout << "draw materials off\ndraw color 17"<< endl;
-		if(!surfaces.empty()){
-			
-			for(i=0; i<surfaces.size(); i++){
-					fout << "draw line "<< "\"" <<double(0.01)*(surfaces.at(i).pA.x) << " " <<double(0.01)*(surfaces.at(i).pA.y) << " " <<double(0.01)*(surfaces.at(i).pA.z) << "\" \"" <<
-					double(0.01)*(surfaces.at(i).pB.x) << " " <<double(0.01)*(surfaces.at(i).pB.y) << " " <<double(0.01)*(surfaces.at(i).pB.z)<< "\" style dashed \n";
-					fout << "draw line "<< "\"" <<double(0.01)*(surfaces.at(i).pB.x) << " " <<double(0.01)*(surfaces.at(i).pB.y) << " " <<double(0.01)*(surfaces.at(i).pB.z) << "\" \"" <<
-					double(0.01)*(surfaces.at(i).pC.x) << " " <<double(0.01)*(surfaces.at(i).pC.y) << " " <<double(0.01)*(surfaces.at(i).pC.z)<< "\" style dashed \n";
-					fout << "draw line "<< "\"" <<double(0.01)*(surfaces.at(i).pC.x) << " " <<double(0.01)*(surfaces.at(i).pC.y) << " " <<double(0.01)*(surfaces.at(i).pC.z) << "\" \"" <<
-					double(0.01)*(surfaces.at(i).pD.x) << " " <<double(0.01)*(surfaces.at(i).pD.y) << " " <<double(0.01)*(surfaces.at(i).pD.z)<< "\" style dashed \n";
-					fout << "draw line "<< "\"" <<double(0.01)*(surfaces.at(i).pD.x) << " " <<double(0.01)*(surfaces.at(i).pD.y) << " " <<double(0.01)*(surfaces.at(i).pD.z) << "\" \"" <<
-					double(0.01)*(surfaces.at(i).pA.x) << " " <<double(0.01)*(surfaces.at(i).pA.y) << " " <<double(0.01)*(surfaces.at(i).pA.z)<< "\" style dashed \n";
-			}
+		for(i=0; i<surfaces.size(); i++){
+				fout << "draw line "<< "\"" <<double(0.01)*(surfaces.at(i).pA.x) << " " <<double(0.01)*(surfaces.at(i).pA.y) << " " <<double(0.01)*(surfaces.at(i).pA.z) << "\" \"" <<
+				double(0.01)*(surfaces.at(i).pB.x) << " " <<double(0.01)*(surfaces.at(i).pB.y) << " " <<double(0.01)*(surfaces.at(i).pB.z)<< "\" style dashed \n";
+				fout << "draw line "<< "\"" <<double(0.01)*(surfaces.at(i).pB.x) << " " <<double(0.01)*(surfaces.at(i).pB.y) << " " <<double(0.01)*(surfaces.at(i).pB.z) << "\" \"" <<
+				double(0.01)*(surfaces.at(i).pC.x) << " " <<double(0.01)*(surfaces.at(i).pC.y) << " " <<double(0.01)*(surfaces.at(i).pC.z)<< "\" style dashed \n";
+				fout << "draw line "<< "\"" <<double(0.01)*(surfaces.at(i).pC.x) << " " <<double(0.01)*(surfaces.at(i).pC.y) << " " <<double(0.01)*(surfaces.at(i).pC.z) << "\" \"" <<
+				double(0.01)*(surfaces.at(i).pD.x) << " " <<double(0.01)*(surfaces.at(i).pD.y) << " " <<double(0.01)*(surfaces.at(i).pD.z)<< "\" style dashed \n";
+				fout << "draw line "<< "\"" <<double(0.01)*(surfaces.at(i).pD.x) << " " <<double(0.01)*(surfaces.at(i).pD.y) << " " <<double(0.01)*(surfaces.at(i).pD.z) << "\" \"" <<
+				double(0.01)*(surfaces.at(i).pA.x) << " " <<double(0.01)*(surfaces.at(i).pA.y) << " " <<double(0.01)*(surfaces.at(i).pA.z)<< "\" style dashed \n";
 		}
-		
-		fout.close();
 	}
-		
+	
+	fout.close();
+    }
 	lx=double(0.01)*(PRM.MIN_X);
 	ly=double(0.01)*(PRM.MIN_Y);
 	lz=double(0.01)*(PRM.MIN_Z);
@@ -1655,26 +2148,17 @@ void print_vmd_channel_files(){
 		fout2 << "draw line \"" << hx << " " << hy << " " << hz << "\" \"" << lx << " " << hy << " " << hz << "\" style solid \n";
 		fout2 << "draw line \"" << lx << " " << hy << " " << hz << "\" \"" << lx << " " << ly << " " << hz << "\" style solid \n";
 	}
-	
 	fout2.close();
-	
-	//~ cout << "membrane_charges.size(): " << membrane_charges.size() <<endl;
 	 
 	string fileout3 = PRM.PREFIX + "_mem_charges.pdbrq";
 	createFile(fileout3);
 	if(!membrane_charges.empty()){
-	
 		char *tfn3 = new char[fileout3.length()+1];
 		strcpy(tfn3, fileout3.c_str());     
 		ofstream fout3(tfn3);
-	
 		fout3 << setprecision(4);
-	
 		for(int i=0; i<membrane_charges.size(); i++){
-			
 			//~ cout << membrane_charges.at(i).charge <<endl;
-			
-			
 			fout3<<"ATOM  "<<				//recname
 			setw(5)<<i+1					//serial
 			<<" ";								//space
@@ -1688,8 +2172,8 @@ void print_vmd_channel_files(){
 				<<" "								//altLoc
 				<<setw(3)<<"  N";		//resName
 			}
-			fout3<<" "								//space
-			<<" "								//cainID
+			fout3<<" "					//space
+			<<" "						//chainID
 			<<setw(5)<<i+1					//Seqno
 			<<"   "							//three spaces
 			<<setw(8)<<1e10*membrane_charges.at(i).x	//atom X coordinate
@@ -1702,9 +2186,6 @@ void print_vmd_channel_files(){
 		fout3<<"END"<<endl;
 		fout3.close();	
 	}
-	
-	
-	
     return;
 }
 
@@ -2759,535 +3240,6 @@ void print_conf_file(ostream& stream){
 	
 	fout.close();
 	
-	return;
-}
-
-
-void retrieve_ions_parameters(string conf_file){
-	if(fileExists(conf_file)){
-		if(verifyExtension(conf_file, "conf")){
-			string buffer="";
-			ifstream fin; 
-			char *tfn = new char[conf_file.length()+1];
-			strcpy(tfn, conf_file.c_str());     
-			fin.open(tfn, ifstream::in);  
-			if(!fin){
-				cout <<"ERROR: it is not possible to open the file: " << conf_file << endl;
-				exit(4);
-			}
-			while(!fin.eof()){
-				if(getline(fin, buffer)){
-					if(buffer.substr(0,1).compare("#")!=0){
-						size_t found=buffer.find("=");
-						if(found!=string::npos){
-							removeAllWhite(buffer);
-							if(getTokenbyNumber(buffer, "=", 1).compare("K_VALENCE")==0){
-								K_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("K_RADIUS")==0){
-								K_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("K_DIFF_COEFF")==0){
-								K_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("K_MASS")==0){
-								K_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("NA_VALENCE")==0){
-								NA_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("NA_RADIUS")==0){
-								NA_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("NA_DIFF_COEFF")==0){
-								NA_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("NA_MASS")==0){
-								NA_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("CA_VALENCE")==0){
-								CA_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("CA_RADIUS")==0){
-								CA_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("CA_DIFF_COEFF")==0){
-								CA_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("CA_MASS")==0){
-								CA_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("MG_VALENCE")==0){
-								MG_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("MG_RADIUS")==0){
-								MG_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("MG_DIFF_COEFF")==0){
-								MG_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("MG_MASS")==0){
-								MG_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("CL_VALENCE")==0){
-								CL_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("CL_RADIUS")==0){
-								CL_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("CL_DIFF_COEFF")==0){
-								CL_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("CL_MASS")==0){
-								CL_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION1_VALENCE")==0){
-								BOX1_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION1_RADIUS")==0){
-								BOX1_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION1_DIFF_COEFF")==0){
-								BOX1_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION1_MASS")==0){
-								BOX1_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION2_VALENCE")==0){
-								BOX1_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION2_RADIUS")==0){
-								BOX1_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION2_DIFF_COEFF")==0){
-								BOX1_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION2_MASS")==0){
-								BOX1_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION3_VALENCE")==0){
-								BOX1_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION3_RADIUS")==0){
-								BOX1_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION3_DIFF_COEFF")==0){
-								BOX1_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION3_MASS")==0){
-								BOX1_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION4_VALENCE")==0){
-								BOX1_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION4_RADIUS")==0){
-								BOX1_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION4_DIFF_COEFF")==0){
-								BOX1_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION4_MASS")==0){
-								BOX1_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION5_VALENCE")==0){
-								BOX1_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION5_RADIUS")==0){
-								BOX1_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION5_DIFF_COEFF")==0){
-								BOX1_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION5_MASS")==0){
-								BOX1_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION6_VALENCE")==0){
-								BOX1_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION6_RADIUS")==0){
-								BOX1_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION6_DIFF_COEFF")==0){
-								BOX1_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX1_ION6_MASS")==0){
-								BOX1_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION1_VALENCE")==0){
-								BOX2_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION1_RADIUS")==0){
-								BOX2_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION1_DIFF_COEFF")==0){
-								BOX2_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION1_MASS")==0){
-								BOX2_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION2_VALENCE")==0){
-								BOX2_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION2_RADIUS")==0){
-								BOX2_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION2_DIFF_COEFF")==0){
-								BOX2_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION2_MASS")==0){
-								BOX2_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION3_VALENCE")==0){
-								BOX2_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION3_RADIUS")==0){
-								BOX2_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION3_DIFF_COEFF")==0){
-								BOX2_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION3_MASS")==0){
-								BOX2_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION4_VALENCE")==0){
-								BOX2_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION4_RADIUS")==0){
-								BOX2_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION4_DIFF_COEFF")==0){
-								BOX2_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION4_MASS")==0){
-								BOX2_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION5_VALENCE")==0){
-								BOX2_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION5_RADIUS")==0){
-								BOX2_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION5_DIFF_COEFF")==0){
-								BOX2_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION5_MASS")==0){
-								BOX2_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION6_VALENCE")==0){
-								BOX2_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION6_RADIUS")==0){
-								BOX2_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION6_DIFF_COEFF")==0){
-								BOX2_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX2_ION6_MASS")==0){
-								BOX2_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION1_VALENCE")==0){
-								BOX3_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION1_RADIUS")==0){
-								BOX3_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION1_DIFF_COEFF")==0){
-								BOX3_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION1_MASS")==0){
-								BOX3_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION2_VALENCE")==0){
-								BOX3_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION2_RADIUS")==0){
-								BOX3_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION2_DIFF_COEFF")==0){
-								BOX3_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION2_MASS")==0){
-								BOX3_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION3_VALENCE")==0){
-								BOX3_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION3_RADIUS")==0){
-								BOX3_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION3_DIFF_COEFF")==0){
-								BOX3_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION3_MASS")==0){
-								BOX3_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION4_VALENCE")==0){
-								BOX3_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION4_RADIUS")==0){
-								BOX3_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION4_DIFF_COEFF")==0){
-								BOX3_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION4_MASS")==0){
-								BOX3_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION5_VALENCE")==0){
-								BOX3_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION5_RADIUS")==0){
-								BOX3_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION5_DIFF_COEFF")==0){
-								BOX3_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION5_MASS")==0){
-								BOX3_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION6_VALENCE")==0){
-								BOX3_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION6_RADIUS")==0){
-								BOX3_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION6_DIFF_COEFF")==0){
-								BOX3_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX3_ION6_MASS")==0){
-								BOX3_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION1_VALENCE")==0){
-								BOX4_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION1_RADIUS")==0){
-								BOX4_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION1_DIFF_COEFF")==0){
-								BOX4_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION1_MASS")==0){
-								BOX4_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION2_VALENCE")==0){
-								BOX4_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION2_RADIUS")==0){
-								BOX4_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION2_DIFF_COEFF")==0){
-								BOX4_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION2_MASS")==0){
-								BOX4_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION3_VALENCE")==0){
-								BOX4_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION3_RADIUS")==0){
-								BOX4_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION3_DIFF_COEFF")==0){
-								BOX4_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION3_MASS")==0){
-								BOX4_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION4_VALENCE")==0){
-								BOX4_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION4_RADIUS")==0){
-								BOX4_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION4_DIFF_COEFF")==0){
-								BOX4_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION4_MASS")==0){
-								BOX4_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION5_VALENCE")==0){
-								BOX4_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION5_RADIUS")==0){
-								BOX4_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION5_DIFF_COEFF")==0){
-								BOX4_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION5_MASS")==0){
-								BOX4_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION6_VALENCE")==0){
-								BOX4_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION6_RADIUS")==0){
-								BOX4_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION6_DIFF_COEFF")==0){
-								BOX4_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX4_ION6_MASS")==0){
-								BOX4_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION1_VALENCE")==0){
-								BOX5_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION1_RADIUS")==0){
-								BOX5_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION1_DIFF_COEFF")==0){
-								BOX5_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION1_MASS")==0){
-								BOX5_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION2_VALENCE")==0){
-								BOX5_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION2_RADIUS")==0){
-								BOX5_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION2_DIFF_COEFF")==0){
-								BOX5_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION2_MASS")==0){
-								BOX5_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION3_VALENCE")==0){
-								BOX5_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION3_RADIUS")==0){
-								BOX5_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION3_DIFF_COEFF")==0){
-								BOX5_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION3_MASS")==0){
-								BOX5_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION4_VALENCE")==0){
-								BOX5_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION4_RADIUS")==0){
-								BOX5_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION4_DIFF_COEFF")==0){
-								BOX5_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION4_MASS")==0){
-								BOX5_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION5_VALENCE")==0){
-								BOX5_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION5_RADIUS")==0){
-								BOX5_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION5_DIFF_COEFF")==0){
-								BOX5_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION5_MASS")==0){
-								BOX5_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION6_VALENCE")==0){
-								BOX5_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION6_RADIUS")==0){
-								BOX5_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION6_DIFF_COEFF")==0){
-								BOX5_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX5_ION6_MASS")==0){
-								BOX5_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION1_VALENCE")==0){
-								BOX6_ION1_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION1_RADIUS")==0){
-								BOX6_ION1_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION1_DIFF_COEFF")==0){
-								BOX6_ION1_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION1_MASS")==0){
-								BOX6_ION1_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION2_VALENCE")==0){
-								BOX6_ION2_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION2_RADIUS")==0){
-								BOX6_ION2_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION2_DIFF_COEFF")==0){
-								BOX6_ION2_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION2_MASS")==0){
-								BOX6_ION2_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION3_VALENCE")==0){
-								BOX6_ION3_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION3_RADIUS")==0){
-								BOX6_ION3_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION3_DIFF_COEFF")==0){
-								BOX6_ION3_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION3_MASS")==0){
-								BOX6_ION3_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION4_VALENCE")==0){
-								BOX6_ION4_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION4_RADIUS")==0){
-								BOX6_ION4_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION4_DIFF_COEFF")==0){
-								BOX6_ION4_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION4_MASS")==0){
-								BOX6_ION4_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION5_VALENCE")==0){
-								BOX6_ION5_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION5_RADIUS")==0){
-								BOX6_ION5_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION5_DIFF_COEFF")==0){
-								BOX6_ION5_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION5_MASS")==0){
-								BOX6_ION5_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION6_VALENCE")==0){
-								BOX6_ION6_VALENCE=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION6_RADIUS")==0){
-								BOX6_ION6_RADIUS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION6_DIFF_COEFF")==0){
-								BOX6_ION6_DIFF_COEFF=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("BOX6_ION6_MASS")==0){
-								BOX6_ION6_MASS=atof(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
-						}
-					}
-				}					
-			}
-			fin.close();
-		}
-		else{
-			cout << "The file " << conf_file << " is not a regular .conf file. Please give a correct path to .conf file" <<endl;
-			exit(3);
-		}
-	}
-	else{
-		cout << "The file " << conf_file << " does not exist. Please give a correct path to .conf file" <<endl;
-		exit(2);
-	}
 	return;
 }
 
