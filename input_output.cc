@@ -1182,19 +1182,24 @@ void retrieve_parameters(string conf_file){
 }
 
 void check_parameters(){
-	if(PRM.SIM_TYPE.compare("NULL")==0){
-		cout << "WRONG PARAMETER! SIM_TYPE must be set! e.g. SIM_TYPE = channel_name" <<endl;
-		cout << "Keywords are: BULK, MEMBRANE, PORE" <<endl;
-		exit(5);
-	}
-	if(PRM.PREFIX.compare("NULL")==0){
-		cout << "WRONG PARAMETER! PREFIX must be set! e.g. PREFIX = sim_prefix" <<endl;
-		exit(5);
-	}
 	if(PRM.SIM_TYPE.compare("BULK")!=0 && PRM.SIM_TYPE.compare("MEMBRANE")!=0 && PRM.SIM_TYPE.compare("PORE")!=0){
 		cout << "WRONG PARAMETER!" <<endl;
 		cout << "Parameter SIM_TYPE is set to: " <<PRM.SIM_TYPE<<endl;
 		cout << PRM.SIM_TYPE << " is not a keyword (BULK, MEMBRANE, PORE)" <<endl;
+		exit(5);
+	}
+	if(PRM.SIM_TYPE.compare("BULK")==0) {
+		if(PRM.induced_charge != 0) {
+			cout << "WRONG PARAMETER! induced_charge must be zero for BULK simulation" <<endl;
+			exit(5);
+		}
+		if(PRM.mean_square_displ != 0) {
+			cout << "WRONG PARAMETER! mean_square_displ must be zero for BULK simulation" <<endl;
+			exit(5);
+		}
+	}
+	if(PRM.PREFIX.compare("NULL")==0){
+		cout << "WRONG PARAMETER! PREFIX must be set! e.g. PREFIX = sim_prefix" <<endl;
 		exit(5);
 	}
 	if(PRM.CONTROL_CELL_WIDTH<0){
