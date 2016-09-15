@@ -286,7 +286,6 @@ class Parameters{
 	
 	int STATS_OUT_FREQ;
 	double STATS_DZ;
-	int PDB_OUT_FREQ;
 	
 	bool channel_pdb_files;
 	bool flux;

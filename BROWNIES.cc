@@ -1,10 +1,6 @@
 /*@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
-
 Copyright (C) 2014 Claudio Berti
-
-
-
 -----------------------------------------------------------------------------
 Claudio Berti, Ph.D.,
 Department of Molecular Biophysics and Physiology,
@@ -16,8 +12,6 @@ Tel: 312.942.6756
 Fax: 312.942.8711
 E-Mail: brt.cld@gmail.com
 -----------------------------------------------------------------------------		
-
-
 
 This file is part of BROWNIES.
 
@@ -269,17 +263,14 @@ int main(int argc,char *argv[]){
 					pdb_xs_0.push_back(20000);
 					pdb_ys_0.push_back(20000);
 					pdb_zs_0.push_back(0);
-					
 					pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
 					pdb_xs_0.push_back(20000);
 					pdb_ys_0.push_back(20000);
 					pdb_zs_0.push_back(0);
-					
 					pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
 					pdb_xs_0.push_back(20000);
 					pdb_ys_0.push_back(20000);
 					pdb_zs_0.push_back(0);
-
 					already_inserted.push_back(IONS[INDEX_LAST_STEP][ion_index].name);					
 					pdb_ion_species.push_back(IONS[INDEX_LAST_STEP][ion_index].kind);
 				}
@@ -295,17 +286,14 @@ int main(int argc,char *argv[]){
 						pdb_xs_0.push_back(20000);
 						pdb_ys_0.push_back(20000);
 						pdb_zs_0.push_back(0);
-						
 						pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
 						pdb_xs_0.push_back(20000);
 						pdb_ys_0.push_back(20000);
 						pdb_zs_0.push_back(0);
-						
 						pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
 						pdb_xs_0.push_back(20000);
 						pdb_ys_0.push_back(20000);
 						pdb_zs_0.push_back(0);
-
 						already_inserted.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
 						pdb_ion_species.push_back(IONS[INDEX_LAST_STEP][ion_index].kind);
 					}

@@ -210,9 +210,6 @@ void retrieve_parameters(string conf_file){
 							else if(getTokenbyNumber(buffer, "=", 1).compare("STATS_OUT_FREQ")==0){
 								PRM.STATS_OUT_FREQ=atoi(getTokenbyNumber(buffer, "=", 2).c_str());
 							}
-							else if(getTokenbyNumber(buffer, "=", 1).compare("PDB_OUT_FREQ")==0){
-								PRM.PDB_OUT_FREQ=atoi(getTokenbyNumber(buffer, "=", 2).c_str());
-							}
 							else if(getTokenbyNumber(buffer, "=", 1).compare("STATS_DZ")==0){
 								PRM.STATS_DZ=atof(getTokenbyNumber(buffer, "=", 2).c_str());
 							}
@@ -3275,21 +3272,3 @@ void initialize_output_potential(){
 	return;
 	
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

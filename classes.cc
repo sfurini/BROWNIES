@@ -93,26 +93,20 @@ Parameters::~Parameters(){
 }
 
 void Parameters::reset_parameters(){
-	
 	HISTORY_SIZE=50;
 	//~ HISTORY_SIZE=4;
-	
 	SEED=0;
 
 	SIM_TYPE="NULL";
-
 	PREFIX="NULL";	
-	
 	
 	SR_METHOD="NULL";
 	
 	FIXED_CHARGES_FILE="NULL";
-	
 
 	MD_MAP_MIN_Z=0;
 	MD_MAP_MAX_Z=0;
 
-	
 	PBC="NULL";
 	ION_RECYCLING="NULL";
 	SHORT_RANGE_EXP=12.00;
@@ -158,7 +152,6 @@ void Parameters::reset_parameters(){
 	RIGHT_VESTIBULE_MIN_CHANNEL_RADIUS=0.00;
 	//~ RIGHT_VESTIBULE_MAX_CHANNEL_RADIUS=0.00;
 	
-	
 	TILES_PER_RING=10;
 	NUM_OF_DIV=10;
 	NUM_OF_SUB_DIV=100;
@@ -183,7 +176,7 @@ void Parameters::reset_parameters(){
 	FIRST_STEP=0;
 	step=0;
 	
-	DELTA_T=0.00;
+	DELTA_T=0.00; //[fs]
 	TEMPERATURE=0.00;
 	
 // ion boxes
@@ -307,11 +300,9 @@ void Parameters::reset_parameters(){
 	charge_ring_n.clear();
 	charge_ring_q.clear();
 	
-	
 //statistics...	
 	STATS_DZ=10;
 	STATS_OUT_FREQ=1;
-	PDB_OUT_FREQ=0;
 
 	channel_pdb_files=false;
 	flux=false;
@@ -321,10 +312,8 @@ void Parameters::reset_parameters(){
 	potential=0;
 	concentrations=0;
 	
-	
 	channel_configuration=false;
 	filter_configuration=false;
-	
 
 	currents_ZT=false;
 	
@@ -334,7 +323,6 @@ void Parameters::reset_parameters(){
 	out_of_domain=0;
 	
 	ions_to_simulate.clear();
-	
 	return;
 }
 	
@@ -867,7 +855,6 @@ void Statistics::reset_statistics(){
 // ions position
 	if(PRM.channel_pdb_files){
 		ions_pos.clear();
-		
 		string cmd="rm " + PRM.PREFIX + "*.pdb " + PRM.PREFIX + "*.dcd";
 		char *command = new char[cmd.length()+1];
 		strcpy(command, cmd.c_str()); 	
@@ -1422,10 +1409,6 @@ void Statistics::reset_statistics(){
 }
 
 void Statistics::update_statistics(){
-	
-	
-
-	
 	int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/PRM.STATS_DZ;
 
 	for(int i=0; i<NUM_OF_IONIC_SPECIES; i++){
@@ -1437,24 +1420,19 @@ void Statistics::update_statistics(){
 	
 // ions position
 	if(PRM.channel_pdb_files){
-		
 		if(fmod(STEPS[INDEX_STAT_STEP],10)==0){
-			
 			pdb_names_this_step.clear();
 			pdb_xs_this_step.clear();
 			pdb_ys_this_step.clear();
 			pdb_zs_this_step.clear();
-			
 			pdb_names_this_step=pdb_names_0;
 			pdb_xs_this_step=pdb_xs_0;
 			pdb_ys_this_step=pdb_ys_0;
 			pdb_zs_this_step=pdb_zs_0;
-			
 			vector <int> ion_counter;
 			for(int kkk=0; kkk<pdb_ion_species.size(); kkk++){
 				ion_counter.push_back(0);
 			}
-			
 			int output_index=0;
 			int first_non_j=0;
 			for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
@@ -1468,20 +1446,18 @@ void Statistics::update_statistics(){
 				else{
 					for(int kkk=0; kkk<pdb_ion_species.size(); kkk++){
 						if(IONS[INDEX_STAT_STEP][i].kind==pdb_ion_species.at(kkk)){
-							
-							if(1e12*IONS[INDEX_STAT_STEP][i].z>PRM.Z_MOUTH_LEFT && 1e12*IONS[INDEX_STAT_STEP][i].z<PRM.Z_MOUTH_RIGHT){
+							//if(1e12*IONS[INDEX_STAT_STEP][i].z>PRM.Z_MOUTH_LEFT && 1e12*IONS[INDEX_STAT_STEP][i].z<PRM.Z_MOUTH_RIGHT){
 								output_index=first_non_j+kkk*3+ion_counter.at(kkk);
 								pdb_names_this_step.at(output_index)=IONS[INDEX_STAT_STEP][i].name;
 								pdb_xs_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].x*1e13);
 								pdb_ys_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].y*1e13);
 								pdb_zs_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].z*1e13);
 								ion_counter.at(kkk)=ion_counter.at(kkk)++;
-							}
+							//}
 						}
 					}
 				}
 			}
-			
 			pdb_names.push_back(pdb_names_this_step);
 			pdb_xs.push_back(pdb_xs_this_step);
 			pdb_ys.push_back(pdb_ys_this_step);
@@ -1539,23 +1515,18 @@ void Statistics::update_statistics(){
 
 // mean square displacement computation	
 	if(PRM.mean_square_displ){
-		
 		for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
 			double start_x=1e12*msds_start.at(i).x;
 			double start_y=1e12*msds_start.at(i).y;
 			double start_z=1e12*msds_start.at(i).z;
-			
 			double charge_x=1e12*IONS[INDEX_STAT_STEP][i].x_prev;
 			double charge_y=1e12*IONS[INDEX_STAT_STEP][i].y_prev;
 			double charge_z=1e12*IONS[INDEX_STAT_STEP][i].z_prev;
-			
 			apply_periodic_boundary(start_x, start_y, start_z, charge_x, charge_y, charge_z);
 			double distance=1e-2*get_distance(start_x, start_y, start_z, charge_x, charge_y, charge_z);	//MSD in A^2
 			double distance_2=distance*distance;
-			
 			msds.at(IONS[INDEX_STAT_STEP][i].kind).at(msds_index_2)+=distance_2;
 		}
-		
 		msds_index_2++;
 	}	
 	
@@ -1571,8 +1542,6 @@ void Statistics::update_statistics(){
 				int ix=(1e12*IONS[INDEX_STAT_STEP][i].x-PRM.MIN_X)/double(100.00);
 				int iy=(1e12*IONS[INDEX_STAT_STEP][i].y-PRM.MIN_Y)/double(100.00);
 				int iz=(1e12*IONS[INDEX_STAT_STEP][i].z-PRM.MIN_Z)/double(100.00);
-				
-				
 				if((ix>=0 && ix<num_of_div_x) && (iy>=0 && iy<num_of_div_y) && (iz>=0 && iz<num_of_div_z)){
 					concs_3D.at(IONS[INDEX_STAT_STEP][i].kind).at(ix).at(iy).at(iz)+=1.00;
 				}
@@ -1584,14 +1553,12 @@ void Statistics::update_statistics(){
 		else{
 			int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
 			int num_of_div_on_r_stat=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
-			
 			for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
 				double dx=(1e12*IONS[INDEX_STAT_STEP][i].x);
 				double dy=(1e12*IONS[INDEX_STAT_STEP][i].y);
 				double dist=sqrt(dx*dx+dy*dy);
 				int ir=(dist)/double(100.00);
 				int iz=(1e12*IONS[INDEX_STAT_STEP][i].z-PRM.MIN_Z)/double(100.00);
-				
 				if((iz>=0 && iz<num_of_div_on_z_stat) && (ir>=0 && ir<num_of_div_on_r_stat)){
 					radial_concs.at(IONS[INDEX_STAT_STEP][i].kind).at(iz).at(ir)+=1.00;
 				}
@@ -1603,13 +1570,11 @@ void Statistics::update_statistics(){
 	
 // potential computation	
 	if(PRM.potential!=0){	
-		
 		for(int i=0; i<2001; i++){
 			if(isnormal(POTENTIALS_ON_AXIS[INDEX_STAT_STEP][i]) || POTENTIALS_ON_AXIS[INDEX_STAT_STEP][i]==0){
 				AVERAGE_POTENTIALS_ON_AXIS[i]+=(POTENTIALS_ON_AXIS[INDEX_STAT_STEP][i]-POTENTIALS_ON_AXIS[INDEX_STAT_STEP][2000]);
 			}
 		}
-		
 	}	
 	
 // currents computation	(ZERO THRESHOLD, one threshold at z=0)
@@ -1645,7 +1610,6 @@ void Statistics::update_statistics(){
 		}
 	
 		CHANNEL_CONFIGURATIONS[counter_Na][counter_K][counter_Mg][counter_Ca][counter_Cl]=CHANNEL_CONFIGURATIONS[counter_Na][counter_K][counter_Mg][counter_Ca][counter_Cl]+1.00;
-		
 		
 		if(last_output_channel_configuration[0]==counter_Na && last_output_channel_configuration[1]==counter_K && last_output_channel_configuration[2]==counter_Mg && last_output_channel_configuration[3]==counter_Ca &&  last_output_channel_configuration[4]==counter_Cl){
 			channel_same_configuration_counter++;
@@ -1784,8 +1748,6 @@ void Statistics::update_statistics(){
 			filter_same_configuration_counter=0;
 		}
 	}
-	
-	
 	return;
 }
 
@@ -1929,7 +1891,6 @@ void Statistics::print_statistics(){
 		
 		for(int iii; iii<pdb_names.size(); iii++){
 			for(int jjj=0; jjj<pdb_names.at(iii).size(); jjj++){
-				
 				fout1<<"ATOM  "<<		//recname
 						setw(5)<<jjj+1	//serial
 						<<" "			//space
@@ -1949,19 +1910,14 @@ void Statistics::print_statistics(){
 			}
 			fout1<<"END"<<endl;
 		}
-		
-
 		fout1.close();
-		
 		
 		pdb_names.clear();
 		pdb_xs.clear();
 		pdb_ys.clear();
 		pdb_zs.clear();
-		
 		pdb_file_index++;
 	}
-
 	
 // flux computation	
 	if(PRM.flux){
