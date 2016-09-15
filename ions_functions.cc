@@ -300,28 +300,21 @@ void initialize_right_control_cell(){
 	
 void initialize_ions_left_cell(){
 	cout << "initialize_ions_left_cell - begin" <<endl;	
-
 	int start_index=NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP];
-
 	for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
 		int N0=round(left_cell.back().eta.at(is));
-		
 		for(int ii=0; ii<N0; ii++){			
-			NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]=insert_ion(is, INDEX_LAST_STEP);
+			NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP] = insert_ion(is, INDEX_LAST_STEP);
 		}
 	}
-
 // add other ionic solutions	
 	for(int i=start_index; i<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; i++){
-		
 		bool goon=true;
 		do{
 			goon=true;
-
 			IONS[INDEX_LAST_STEP][i].x=PRM.MIN_X+PRM.SIM_DOMAIN_WIDTH_X*((double)rand()/((double)(RAND_MAX)+(double)(1)));
 			IONS[INDEX_LAST_STEP][i].y=PRM.MIN_Y+PRM.SIM_DOMAIN_WIDTH_Y*((double)rand()/((double)(RAND_MAX)+(double)(1)));
 			IONS[INDEX_LAST_STEP][i].z=PRM.LEFT_CELL_MIN_Z+PRM.CONTROL_CELL_WIDTH*((double)rand()/((double)(RAND_MAX)+(double)(1)));
-			
 			for(int j=0; j<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; j++){
 				if(i!=j){
 					goon=goon*verifyDistance(IONS[INDEX_LAST_STEP][i].x, IONS[INDEX_LAST_STEP][i].y, IONS[INDEX_LAST_STEP][i].z, double(2.00)*IONS[INDEX_LAST_STEP][i].pm_radius, 1e12*IONS[INDEX_LAST_STEP][j].x, 1e12*IONS[INDEX_LAST_STEP][j].y, 1e12*IONS[INDEX_LAST_STEP][j].z, double(2.00)*IONS[INDEX_LAST_STEP][j].pm_radius);
@@ -333,45 +326,34 @@ void initialize_ions_left_cell(){
 			else{
 				goon=false;
 			}
-		}
-		while(!goon);
-
+		} while(!goon);
 		IONS[INDEX_LAST_STEP][i].x=1e-12*IONS[INDEX_LAST_STEP][i].x;
 		IONS[INDEX_LAST_STEP][i].y=1e-12*IONS[INDEX_LAST_STEP][i].y;
 		IONS[INDEX_LAST_STEP][i].z=1e-12*IONS[INDEX_LAST_STEP][i].z;
-		
 		//set the initial velocity
 		initialize_ion_velocity(IONS[INDEX_LAST_STEP][i]);
 	}
-
 	cout << "initialize_ions_left_cell - end" <<endl;
 	return;
 }
 	
 void initialize_ions_right_cell(){
 	cout << "initialize_ions_right_cell - begin" <<endl;
-
 	int start_index=NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP];
-	
 	for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
 		int N0=round(right_cell.back().eta.at(is));
-		
 		for(int ii=0; ii<N0; ii++){			
 			NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]=insert_ion(is, INDEX_LAST_STEP);
 		}
 	}
-
 // add other ionic solutions	
 	for(int i=start_index; i<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; i++){
-		
 		bool goon=true;
 		do{
 			goon=true;
-
 			IONS[INDEX_LAST_STEP][i].x=PRM.MIN_X+PRM.SIM_DOMAIN_WIDTH_X*((double)rand()/((double)(RAND_MAX)+(double)(1)));
 			IONS[INDEX_LAST_STEP][i].y=PRM.MIN_Y+PRM.SIM_DOMAIN_WIDTH_Y*((double)rand()/((double)(RAND_MAX)+(double)(1)));
 			IONS[INDEX_LAST_STEP][i].z=PRM.RIGHT_CELL_MIN_Z+PRM.CONTROL_CELL_WIDTH*((double)rand()/((double)(RAND_MAX)+(double)(1)));
-			
 			for(int j=0; j<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; j++){
 				if(i!=j){
 					goon=goon*verifyDistance(IONS[INDEX_LAST_STEP][i].x, IONS[INDEX_LAST_STEP][i].y, IONS[INDEX_LAST_STEP][i].z, double(2.00)*IONS[INDEX_LAST_STEP][i].pm_radius, 1e12*IONS[INDEX_LAST_STEP][j].x, 1e12*IONS[INDEX_LAST_STEP][j].y, 1e12*IONS[INDEX_LAST_STEP][j].z, double(2.00)*IONS[INDEX_LAST_STEP][j].pm_radius);
@@ -385,55 +367,44 @@ void initialize_ions_right_cell(){
 			}
 		}
 		while(!goon);
-
 		IONS[INDEX_LAST_STEP][i].x=1e-12*IONS[INDEX_LAST_STEP][i].x;
 		IONS[INDEX_LAST_STEP][i].y=1e-12*IONS[INDEX_LAST_STEP][i].y;
 		IONS[INDEX_LAST_STEP][i].z=1e-12*IONS[INDEX_LAST_STEP][i].z;
-		
 		//set the initial velocity
 		initialize_ion_velocity(IONS[INDEX_LAST_STEP][i]);
 	}
-	
 	cout << "initialize_ions_right_cell - end" <<endl;
 	return;
 }
 
 void initialize_ions_left_bath(){
 	cout << "initialize_ions_left_bath - begin" <<endl;
-
 	Control_cell buffer;
 	buffer.reset_control_cell();
-	
 	buffer.SIDE=-1;
-	
 	int start_index=NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP];
-	
 	for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
 		int N0=0;
 		if(left_cell.back().eta.at(is)>0){
 			N0=round(left_cell.back().eta.at(is)*PRM.BATH_WIDTH/PRM.CONTROL_CELL_WIDTH);
 			if(N0<3){
 				N0=3;
+			} else if (N0 > 100) {
+				N0=100;
 			}
-			
 			for(int ii=0; ii<N0; ii++){			
 				NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]=insert_ion(is, INDEX_LAST_STEP);
 			}
 		}
 	}
-
 // add other ionic solutions	
 	for(int i=start_index; i<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; i++){
-		
 		bool goon=true;
-		do{
+		do {
 			goon=true;
-
 			IONS[INDEX_LAST_STEP][i].x=PRM.MIN_X+PRM.SIM_DOMAIN_WIDTH_X*((double)rand()/((double)(RAND_MAX)+(double)(1)));
 			IONS[INDEX_LAST_STEP][i].y=PRM.MIN_Y+PRM.SIM_DOMAIN_WIDTH_Y*((double)rand()/((double)(RAND_MAX)+(double)(1)));
 			IONS[INDEX_LAST_STEP][i].z=double(300)+PRM.LEFT_CELL_MAX_Z+(PRM.BATH_WIDTH-double(600))*((double)rand()/((double)(RAND_MAX)+(double)(1)));
-
-			
 			for(int j=0; j<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; j++){
 				if(i!=j){
 					goon=goon*verifyDistance(IONS[INDEX_LAST_STEP][i].x, IONS[INDEX_LAST_STEP][i].y, IONS[INDEX_LAST_STEP][i].z, double(2.00)*IONS[INDEX_LAST_STEP][i].pm_radius, 1e12*IONS[INDEX_LAST_STEP][j].x, 1e12*IONS[INDEX_LAST_STEP][j].y, 1e12*IONS[INDEX_LAST_STEP][j].z, double(2.00)*IONS[INDEX_LAST_STEP][j].pm_radius);
@@ -445,17 +416,13 @@ void initialize_ions_left_bath(){
 			else{
 				goon=false;
 			}
-		}
-		while(!goon);
-
+		} while(!goon);
 		IONS[INDEX_LAST_STEP][i].x=1e-12*IONS[INDEX_LAST_STEP][i].x;
 		IONS[INDEX_LAST_STEP][i].y=1e-12*IONS[INDEX_LAST_STEP][i].y;
 		IONS[INDEX_LAST_STEP][i].z=1e-12*IONS[INDEX_LAST_STEP][i].z;
-		
 		//set the initial velocity
 		initialize_ion_velocity(IONS[INDEX_LAST_STEP][i]);
 	}
-
 	cout << "initialize_ions_left_buffer - end" <<endl;
 	return;
 }
@@ -502,6 +469,8 @@ void initialize_ions_right_bath(){
 			N0=round(right_cell.back().eta.at(is)*PRM.BATH_WIDTH/PRM.CONTROL_CELL_WIDTH);
 			if(N0<3){
 				N0=3;
+			} else if (N0 > 100) {
+				N0=100;
 			}
 			
 			for(int ii=0; ii<N0; ii++){			

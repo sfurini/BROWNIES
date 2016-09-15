@@ -547,12 +547,10 @@ void do_initial_step(){
 	string hhh2="\nOK FATTO "; 	
 		
 		if(CORRECT){
-			
-			//initialize_ions_left_cell();
-			//initialize_ions_right_cell();
-			//initialize_ions_left_bath();
-			//initialize_ions_right_bath();
-			
+			initialize_ions_left_cell();
+			initialize_ions_right_cell();
+			initialize_ions_left_bath();
+			initialize_ions_right_bath();
 			//~ cout << " 2 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@" << endl;
 			//~ for(int ion_index=0; ion_index<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; ion_index++){
 				//~ cout << ion_index<< " " << IONS[INDEX_LAST_STEP][ion_index].name<< " "<< IONS[INDEX_LAST_STEP][ion_index].kind<< " "<< 1e10*IONS[INDEX_LAST_STEP][ion_index].x <<" "<< 1e10*IONS[INDEX_LAST_STEP][ion_index].y<<" "<< 1e10*IONS[INDEX_LAST_STEP][ion_index].z<<endl;
@@ -567,7 +565,6 @@ void do_initial_step(){
 			}
 			cout << "andata..." <<endl;
 			cout << "number of ions: " << NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP] <<endl;
-			
 			langevin_step_0();
 			cout << "1..." <<endl;
 			CORRECT=CORRECT*motion_check_step_0();

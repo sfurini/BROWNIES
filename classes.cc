@@ -628,16 +628,13 @@ ostream& operator<<(ostream& stream, Parameters& PRM){
 // Class Statistics
 //########################################
 Statistics::Statistics(){
-	
 	return;
 }
 
 Statistics::~Statistics(){
-	
 }
 
 void Statistics::reset_statistics(){
-	
 	ERROR_nan=0;
 	ERROR_long_jump=0;
 	ERROR_into_membrane=0;
@@ -731,9 +728,8 @@ void Statistics::reset_statistics(){
 	gnuplot_file_C="";
 	
 	save_status_file="";
-	
 //===========================================	
-														/*
+/*
   kind  name
 	0		O		OXYGEN
 	1		H		HYDROGEN
@@ -842,9 +838,9 @@ void Statistics::reset_statistics(){
 	89		X09		
 	90		X10		
 	91		X11		
-	
-														*/
+*/
 //===========================================	
+  
 	MAX_STEPS=PRM.SIM_STEPS;
 	for(int i=0; i<NUM_OF_IONIC_SPECIES; i++){
 		ions_this_step.push_back(0);
@@ -855,43 +851,37 @@ void Statistics::reset_statistics(){
 // ions position
 	if(PRM.channel_pdb_files){
 		ions_pos.clear();
-		string cmd="rm " + PRM.PREFIX + "*.pdb " + PRM.PREFIX + "*.dcd";
+		string cmd="rm " + PRM.PREFIX + "*.pdb ";
 		char *command = new char[cmd.length()+1];
 		strcpy(command, cmd.c_str()); 	
 		int aaaai=system(command);		
 	}
 	
-// flux computation	
+// flux
 	if(PRM.flux){
 		num_of_dz=int(PRM.SIM_DOMAIN_WIDTH_Z/PRM.STATS_DZ);
 		DELTA_Z=PRM.SIM_DOMAIN_WIDTH_Z/double(num_of_dz);
-		
 		//~ cout << "num_of_dz: " << num_of_dz <<endl;
 		//~ cout << "PRM.SIM_DOMAIN_WIDTH_Z: " << PRM.SIM_DOMAIN_WIDTH_Z <<endl;
 		//~ cout << "PRM.STATS_DZ: " << PRM.STATS_DZ <<endl;
 		//~ cout << "DELTA_Z: " << DELTA_Z <<endl<<flush;
 		//~ sleep(10);
-		
 		for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
-			
 			aux_vec_1.clear();
 			aux_vec_2.clear();
-			
 			if(PRM.ions_to_simulate.at(is)){
 				for(int idz=0; idz<num_of_dz; idz++){
 					aux_vec_1.push_back(0.00);
 					aux_vec_2.push_back(0.00);
 				}
 			}
-			
 			concentrations_along_z.push_back(aux_vec_1);			
-			
 			aux_vec_1.clear();
 			aux_vec_2.clear();
 		}
 	}
 	
-// radial distribution function computation
+// radial distribution function
 	if(PRM.rdf){
 		create_RDF_vector(RDF, RDF_samples);
 	}
@@ -947,19 +937,14 @@ void Statistics::reset_statistics(){
 // mean square displacement computation	
 	if(PRM.mean_square_displ){
 		for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
-			
 			aux_vec_1.clear();
-			
 			if(PRM.ions_to_simulate.at(is)){
 				for(int iv=0; iv<PRM.STATS_OUT_FREQ; iv++){
 					aux_vec_1.push_back(0.00);
 				}
 			}
-		
 			msds.push_back(aux_vec_1);
-			
 			aux_vec_1.clear();
-			
 			msds_num.push_back(0.00);
 		}
 	}	
@@ -981,59 +966,44 @@ void Statistics::reset_statistics(){
 		
 		
 		if(PRM.concentrations==3){
-		
 			int num_of_div_x=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
 			int num_of_div_y=PRM.SIM_DOMAIN_WIDTH_Y/double(100.00);
 			int num_of_div_z=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);	
-			
 			for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
 				aux_vec3.clear();
 				if(PRM.ions_to_simulate.at(is)){
-
 					for(int ix=0; ix<num_of_div_x; ix++){
 						aux_vec2.clear();
-						
 						for(int iy=0; iy<num_of_div_y; iy++){
 							aux_vec1.clear();
-							
 							for(int iz=0; iz<num_of_div_z; iz++){
 								aux_vec1.push_back(double_zero);
 							}
-							
 							aux_vec2.push_back(aux_vec1);
 							aux_vec1.clear();
 						}
-
 						aux_vec3.push_back(aux_vec2);
 						aux_vec2.clear();
 					}
-					
 				}
 				concs_3D.push_back(aux_vec3);
 				aux_vec3.clear();
 			}
 		}
-		
 		else{
-		
 			int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
 			int num_of_div_on_r_stat=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
-			
 			for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
 				aux_vec2.clear();
 				if(PRM.ions_to_simulate.at(is)){
-
 					for(int iz=0; iz<num_of_div_on_z_stat; iz++){
 						aux_vec1.clear();
-						
 						for(int ir=0; ir<num_of_div_on_r_stat; ir++){
 							aux_vec1.push_back(double_zero);	
 						}
-
 						aux_vec2.push_back(aux_vec1);
 						aux_vec1.clear();
 					}
-					
 				}
 				radial_concs.push_back(aux_vec2);
 				aux_vec2.clear();
@@ -1435,6 +1405,8 @@ void Statistics::update_statistics(){
 			}
 			int output_index=0;
 			int first_non_j=0;
+			int debug = 0;
+			//cout << "DEBUG classes.cc " << NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP] << endl;
 			for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
 				if(IONS[INDEX_STAT_STEP][i].kind>=31){
 					pdb_names_this_step.at(first_non_j)=IONS[INDEX_STAT_STEP][i].name;
@@ -1442,22 +1414,25 @@ void Statistics::update_statistics(){
 					pdb_ys_this_step.at(first_non_j)=round(IONS[INDEX_STAT_STEP][i].y*1e13);
 					pdb_zs_this_step.at(first_non_j)=round(IONS[INDEX_STAT_STEP][i].z*1e13);
 					first_non_j++;
-				}
-				else{
+				} else {
 					for(int kkk=0; kkk<pdb_ion_species.size(); kkk++){
+						//cout << "DEBUG classes.cc " << pdb_ion_species.at(kkk) << endl;
 						if(IONS[INDEX_STAT_STEP][i].kind==pdb_ion_species.at(kkk)){
 							//if(1e12*IONS[INDEX_STAT_STEP][i].z>PRM.Z_MOUTH_LEFT && 1e12*IONS[INDEX_STAT_STEP][i].z<PRM.Z_MOUTH_RIGHT){
-								output_index=first_non_j+kkk*3+ion_counter.at(kkk);
-								pdb_names_this_step.at(output_index)=IONS[INDEX_STAT_STEP][i].name;
-								pdb_xs_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].x*1e13);
-								pdb_ys_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].y*1e13);
-								pdb_zs_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].z*1e13);
-								ion_counter.at(kkk)=ion_counter.at(kkk)++;
+							output_index=first_non_j+kkk*3+ion_counter.at(kkk);
+							cout << "DEBUG classes.cc  i = " << i << " output_index = " << output_index << endl;
+							pdb_names_this_step.at(output_index)=IONS[INDEX_STAT_STEP][i].name;
+							pdb_xs_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].x*1e13);
+							pdb_ys_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].y*1e13);
+							pdb_zs_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].z*1e13);
+							ion_counter.at(kkk)=ion_counter.at(kkk)++;
+							debug += 1;
 							//}
 						}
 					}
 				}
 			}
+			cout << "DEBUG debug = " << debug << " size = " << pdb_names_this_step.size() << " size0 = " << pdb_names_0.size() << endl;
 			pdb_names.push_back(pdb_names_this_step);
 			pdb_xs.push_back(pdb_xs_this_step);
 			pdb_ys.push_back(pdb_ys_this_step);
@@ -1469,22 +1444,15 @@ void Statistics::update_statistics(){
 // flux computation	
 	if(PRM.flux){
 		for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
-			
-			//~ if(IONS[INDEX_STAT_STEP][i].side.compare(left_cell.back().SIDE)==0){
-			
 			double zzz=1e12*IONS[INDEX_STAT_STEP][i].z;
-
 			if(zzz<PRM.MIN_Z){
 				zzz=PRM.SIM_DOMAIN_WIDTH_Z+zzz;
 			}
 			if(zzz>PRM.MAX_Z){
 				zzz=zzz-PRM.SIM_DOMAIN_WIDTH_Z;
 			}
-			
 			int index=int((-PRM.MIN_Z+zzz)/DELTA_Z);
 			concentrations_along_z.at(IONS[INDEX_STAT_STEP][i].kind).at(index)+=1.00;
-			
-		//~ }
 		}
 	}
 
@@ -1889,8 +1857,10 @@ void Statistics::print_statistics(){
 		strcpy(tfn1, stat_file_1.c_str());     
 		ofstream fout1(tfn1, ios::app);
 		
-		for(int iii; iii<pdb_names.size(); iii++){
+		for(int iii=0; iii<pdb_names.size(); iii++){
+			//cout << "DEBUG classed.cc pdb_names.size() = " << pdb_names.size() << " iii = " << iii << endl;
 			for(int jjj=0; jjj<pdb_names.at(iii).size(); jjj++){
+				//cout << "DEBUG pdb_names.at(iii).size() = " << pdb_names.at(iii).size() << " classed.cc jjj = " << jjj << endl;
 				fout1<<"ATOM  "<<		//recname
 						setw(5)<<jjj+1	//serial
 						<<" "			//space
@@ -1911,6 +1881,7 @@ void Statistics::print_statistics(){
 			fout1<<"END"<<endl;
 		}
 		fout1.close();
+
 		
 		pdb_names.clear();
 		pdb_xs.clear();
@@ -1919,32 +1890,24 @@ void Statistics::print_statistics(){
 		pdb_file_index++;
 	}
 	
-// flux computation	
+// flux
 	if(PRM.flux){
-		
 		createFile(stat_file_2);
 		char *tfn2 = new char[stat_file_2.length()+1];
 		strcpy(tfn2, stat_file_2.c_str());     
 		ofstream fout2(tfn2, ios::app);
-		
-		
 		for(int i=0; i<num_of_dz; i++){
-			
 			double den=1e-33*AVOGADRO*PRM.SIM_DOMAIN_WIDTH_X*PRM.SIM_DOMAIN_WIDTH_Y*DELTA_Z;
 			fout2 << (PRM.MIN_Z+double(i)*DELTA_Z+double(0.50)*DELTA_Z)/double(100.00) << " ";
-			
 			for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
 				if(PRM.ions_to_simulate.at(is)){
 					fout2 << currents_ZT.at(is)/double(STEPS[INDEX_STAT_STEP]+1)/sample_ions[is].charge << " " << concentrations_along_z.at(is).at(i)/(1e-2*DELTA_Z*double(STEPS[INDEX_STAT_STEP])) << " " << (currents_ZT.at(is)/double(STEPS[INDEX_STAT_STEP]+1)/sample_ions[is].charge)/concentrations_along_z.at(is).at(i)/(1e-2*DELTA_Z*double(STEPS[INDEX_STAT_STEP])) << " " ;
-										
 				}
 			}
 			fout2<<endl;
-		}			
-
-		
+		}
 		fout2.close();
-	}		
+	}
 
 	
 // radial distribution function computation	
