@@ -305,6 +305,7 @@ void Parameters::reset_parameters(){
 	STATS_OUT_FREQ=1;
 
 	channel_pdb_files=false;
+	trajectory=false;
 	flux=false;
 	rdf=false;
 	vel_distribution=false;
@@ -646,7 +647,6 @@ void Statistics::reset_statistics(){
 	
 	ions_this_step.clear();
 	
-	ions_pos.clear();
 	concentrations_along_z.clear();
 
 	RDF.clear();
@@ -687,20 +687,6 @@ void Statistics::reset_statistics(){
 		last_output_filter_configuration[a]=0;
 	}
 
-	pdb_names.clear();
-	pdb_xs.clear();
-	pdb_ys.clear();
-	pdb_zs.clear();
-	pdb_names_0.clear();
-	pdb_xs_0.clear();
-	pdb_ys_0.clear();
-	pdb_zs_0.clear();
-	pdb_names_this_step.clear();
-	pdb_xs_this_step.clear();
-	pdb_ys_this_step.clear();
-	pdb_zs_this_step.clear();
-	
-	pdb_ion_species.clear();	
 	pdb_file_index=1;
 	
 	stat_file_1="";
@@ -850,22 +836,24 @@ void Statistics::reset_statistics(){
 
 // ions position
 	if(PRM.channel_pdb_files){
-		ions_pos.clear();
 		string cmd="rm " + PRM.PREFIX + "*.pdb ";
 		char *command = new char[cmd.length()+1];
 		strcpy(command, cmd.c_str()); 	
 		int aaaai=system(command);		
+	}
+
+// ions trajectories
+	if(PRM.trajectory){
+		string trajectory_file=PRM.PREFIX + ".trajectory.dat";
+		char *tfn1 = new char[trajectory_file.length()+1];
+		strcpy(tfn1, trajectory_file.c_str());
+		ofstream fout_simone(tfn1, ios::out);
 	}
 	
 // flux
 	if(PRM.flux){
 		num_of_dz=int(PRM.SIM_DOMAIN_WIDTH_Z/PRM.STATS_DZ);
 		DELTA_Z=PRM.SIM_DOMAIN_WIDTH_Z/double(num_of_dz);
-		//~ cout << "num_of_dz: " << num_of_dz <<endl;
-		//~ cout << "PRM.SIM_DOMAIN_WIDTH_Z: " << PRM.SIM_DOMAIN_WIDTH_Z <<endl;
-		//~ cout << "PRM.STATS_DZ: " << PRM.STATS_DZ <<endl;
-		//~ cout << "DELTA_Z: " << DELTA_Z <<endl<<flush;
-		//~ sleep(10);
 		for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
 			aux_vec_1.clear();
 			aux_vec_2.clear();
@@ -888,13 +876,9 @@ void Statistics::reset_statistics(){
 	
 // velocity distribution computation	
 	if(PRM.vel_distribution){
-		
 		velocities_samples=0;
-		
 		for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
-			
 			aux_vec_1.clear();
-			
 			if(PRM.ions_to_simulate.at(is)){
 				for(int iv=0; iv<150; iv++){
 					aux_vec_1.push_back(0.00);
@@ -952,7 +936,7 @@ void Statistics::reset_statistics(){
 // induced charge computation
 	
 // potential
-	if(PRM.potential!=0){
+	if(PRM.potential == 1){
 		initialize_output_potential();
 	}	
 	
@@ -1309,11 +1293,11 @@ void Statistics::reset_statistics(){
 		createFile(gnuplot_file_7);
 	}
 
-	if(PRM.potential!=0){
+	if(PRM.potential == 1){
 		createFile(stat_file_C);
 		createFile(gnuplot_file_C);
 		char *tfnCC = new char[gnuplot_file_C.length()+1];
-		strcpy(tfnCC, gnuplot_file_C.c_str());     
+		strcpy(tfnCC, gnuplot_file_C.c_str());
 		ofstream foutCC(tfnCC, ios::app);
 		foutCC << "set encoding iso_8859_1" << endl;
 		foutCC << "set term wxt 1"<<endl;
@@ -1388,59 +1372,6 @@ void Statistics::update_statistics(){
 		ions_this_step.at(IONS[INDEX_STAT_STEP][i].kind)++;
 	}
 	
-// ions position
-	if(PRM.channel_pdb_files){
-		if(fmod(STEPS[INDEX_STAT_STEP],10)==0){
-			pdb_names_this_step.clear();
-			pdb_xs_this_step.clear();
-			pdb_ys_this_step.clear();
-			pdb_zs_this_step.clear();
-			pdb_names_this_step=pdb_names_0;
-			pdb_xs_this_step=pdb_xs_0;
-			pdb_ys_this_step=pdb_ys_0;
-			pdb_zs_this_step=pdb_zs_0;
-			vector <int> ion_counter;
-			for(int kkk=0; kkk<pdb_ion_species.size(); kkk++){
-				ion_counter.push_back(0);
-			}
-			int output_index=0;
-			int first_non_j=0;
-			int debug = 0;
-			//cout << "DEBUG classes.cc " << NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP] << endl;
-			for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
-				if(IONS[INDEX_STAT_STEP][i].kind>=31){
-					pdb_names_this_step.at(first_non_j)=IONS[INDEX_STAT_STEP][i].name;
-					pdb_xs_this_step.at(first_non_j)=round(IONS[INDEX_STAT_STEP][i].x*1e13);
-					pdb_ys_this_step.at(first_non_j)=round(IONS[INDEX_STAT_STEP][i].y*1e13);
-					pdb_zs_this_step.at(first_non_j)=round(IONS[INDEX_STAT_STEP][i].z*1e13);
-					first_non_j++;
-				} else {
-					for(int kkk=0; kkk<pdb_ion_species.size(); kkk++){
-						//cout << "DEBUG classes.cc " << pdb_ion_species.at(kkk) << endl;
-						if(IONS[INDEX_STAT_STEP][i].kind==pdb_ion_species.at(kkk)){
-							//if(1e12*IONS[INDEX_STAT_STEP][i].z>PRM.Z_MOUTH_LEFT && 1e12*IONS[INDEX_STAT_STEP][i].z<PRM.Z_MOUTH_RIGHT){
-							output_index=first_non_j+kkk*3+ion_counter.at(kkk);
-							cout << "DEBUG classes.cc  i = " << i << " output_index = " << output_index << endl;
-							pdb_names_this_step.at(output_index)=IONS[INDEX_STAT_STEP][i].name;
-							pdb_xs_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].x*1e13);
-							pdb_ys_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].y*1e13);
-							pdb_zs_this_step.at(output_index)=round(IONS[INDEX_STAT_STEP][i].z*1e13);
-							ion_counter.at(kkk)=ion_counter.at(kkk)++;
-							debug += 1;
-							//}
-						}
-					}
-				}
-			}
-			cout << "DEBUG debug = " << debug << " size = " << pdb_names_this_step.size() << " size0 = " << pdb_names_0.size() << endl;
-			pdb_names.push_back(pdb_names_this_step);
-			pdb_xs.push_back(pdb_xs_this_step);
-			pdb_ys.push_back(pdb_ys_this_step);
-			pdb_zs.push_back(pdb_zs_this_step);
-		}
-	}
-	
-	
 // flux computation	
 	if(PRM.flux){
 		for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
@@ -1500,9 +1431,7 @@ void Statistics::update_statistics(){
 	
 // concentrations computation	
 	if(PRM.concentrations!=0){	
-		
-///////////================================================================= case 3d averaged on y	
-		if(PRM.concentrations==3){		
+		if(PRM.concentrations==3){ // average on y	
 			int num_of_div_x=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
 			int num_of_div_y=PRM.SIM_DOMAIN_WIDTH_Y/double(100.00);
 			int num_of_div_z=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
@@ -1515,10 +1444,7 @@ void Statistics::update_statistics(){
 				}
 			}	
 		}
-///////////================================================================= case 3d averaged on y
-
-///////////================================================================= case rotational 
-		else{
+		else{ // rotational symmetry
 			int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
 			int num_of_div_on_r_stat=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
 			for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
@@ -1532,12 +1458,11 @@ void Statistics::update_statistics(){
 				}
 			}
 		}
-///////////================================================================= case rotational
 	}
 	
 	
 // potential computation	
-	if(PRM.potential!=0){	
+	if(PRM.potential == 1){	
 		for(int i=0; i<2001; i++){
 			if(isnormal(POTENTIALS_ON_AXIS[INDEX_STAT_STEP][i]) || POTENTIALS_ON_AXIS[INDEX_STAT_STEP][i]==0){
 				AVERAGE_POTENTIALS_ON_AXIS[i]+=(POTENTIALS_ON_AXIS[INDEX_STAT_STEP][i]-POTENTIALS_ON_AXIS[INDEX_STAT_STEP][2000]);
@@ -1857,36 +1782,19 @@ void Statistics::print_statistics(){
 		strcpy(tfn1, stat_file_1.c_str());     
 		ofstream fout1(tfn1, ios::app);
 		
-		for(int iii=0; iii<pdb_names.size(); iii++){
-			//cout << "DEBUG classed.cc pdb_names.size() = " << pdb_names.size() << " iii = " << iii << endl;
-			for(int jjj=0; jjj<pdb_names.at(iii).size(); jjj++){
-				//cout << "DEBUG pdb_names.at(iii).size() = " << pdb_names.at(iii).size() << " classed.cc jjj = " << jjj << endl;
-				fout1<<"ATOM  "<<		//recname
-						setw(5)<<jjj+1	//serial
-						<<" "			//space
-						<<setw(4)<<pdb_names.at(iii).at(jjj)	//atom
-						<<" "				//altLoc
-						<<setw(3)<<pdb_names.at(iii).at(jjj)	//resName
-						<<" "				//space
-						<<" "				//cainID
-						<<setw(5)<<jjj+1	//Seqno
-						<<"   "				//three spaces
-						<<setw(8)<<pdb_xs.at(iii).at(jjj)/double(1000.00)	//atom X coordinate
-						<<setw(8)<<pdb_ys.at(iii).at(jjj)/double(1000.00)	//atom Y coordinate
-						<<setw(8)<<pdb_zs.at(iii).at(jjj)/double(1000.00)	//atom Z coordinate
-						<<setw(6)<<jjj			//occupancy
-						<<setw(6)<<jjj			//tempFactor
-						<<endl;
-			}
-			fout1<<"END"<<endl;
+		for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; i++){
+			fout1<<"ATOM  "<<setw(5)<<i+1<<" "
+				<<setw(4)<<IONS[INDEX_LAST_STEP][i].name<<" "
+				<<setw(3)<<IONS[INDEX_LAST_STEP][i].name<<" "
+				<<setw(5)<<i+1<<"    "			
+				<<setw(8)<<setprecision(3)<<IONS[INDEX_LAST_STEP][i].x*1e10 //atom X coordinate
+				<<setw(8)<<setprecision(3)<<IONS[INDEX_LAST_STEP][i].y*1e10 //atom Y coordinate
+				<<setw(8)<<setprecision(3)<<IONS[INDEX_LAST_STEP][i].z*1e10 //atom Z coordinate
+				<<setw(6)<<"0.0"		//occupancy
+				<<setw(6)<<"0.0"		//tempFactor
+				<<endl;
 		}
 		fout1.close();
-
-		
-		pdb_names.clear();
-		pdb_xs.clear();
-		pdb_ys.clear();
-		pdb_zs.clear();
 		pdb_file_index++;
 	}
 	
@@ -1897,11 +1805,12 @@ void Statistics::print_statistics(){
 		strcpy(tfn2, stat_file_2.c_str());     
 		ofstream fout2(tfn2, ios::app);
 		for(int i=0; i<num_of_dz; i++){
-			double den=1e-33*AVOGADRO*PRM.SIM_DOMAIN_WIDTH_X*PRM.SIM_DOMAIN_WIDTH_Y*DELTA_Z;
 			fout2 << (PRM.MIN_Z+double(i)*DELTA_Z+double(0.50)*DELTA_Z)/double(100.00) << " ";
 			for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
 				if(PRM.ions_to_simulate.at(is)){
-					fout2 << currents_ZT.at(is)/double(STEPS[INDEX_STAT_STEP]+1)/sample_ions[is].charge << " " << concentrations_along_z.at(is).at(i)/(1e-2*DELTA_Z*double(STEPS[INDEX_STAT_STEP])) << " " << (currents_ZT.at(is)/double(STEPS[INDEX_STAT_STEP]+1)/sample_ions[is].charge)/concentrations_along_z.at(is).at(i)/(1e-2*DELTA_Z*double(STEPS[INDEX_STAT_STEP])) << " " ;
+					fout2 << currents_ZT.at(is)/double(STEPS[INDEX_STAT_STEP]+1)/sample_ions[is].charge << " " 
+					      << concentrations_along_z.at(is).at(i)/(1e-2*DELTA_Z*double(STEPS[INDEX_STAT_STEP])) << " " 
+					      << (currents_ZT.at(is)/double(STEPS[INDEX_STAT_STEP]+1)/sample_ions[is].charge)/concentrations_along_z.at(is).at(i)/(1e-2*DELTA_Z*double(STEPS[INDEX_STAT_STEP])) << " " ;
 				}
 			}
 			fout2<<endl;
@@ -2047,34 +1956,28 @@ void Statistics::print_statistics(){
 		C_total_charge.clear();
 		C_total_charge_type.clear();
 	}
-	
-	
-	// potential computation	
-	if(PRM.potential!=0){	
+
+// potential computation	
+	if(PRM.potential == 1){	
 		createFile(stat_file_C);
 		char *tfnC = new char[stat_file_C.length()+1];
 		strcpy(tfnC, stat_file_C.c_str());     
 		ofstream foutC(tfnC, ios::app);
-			
 		for(int i=0; i<2001; i++){
 			// convert from microVolts for accumulation in computing the average
 			foutC << 1e10*POINTS_ON_AXIS[i] << "\t" << 1e9*AVERAGE_POTENTIALS_ON_AXIS[i]/double(STEPS[INDEX_STAT_STEP]+1) << endl;
 		}
-			
 		foutC.close();
-	}	
+	}
 	
-	
-	// concentrations computation	
+// concentrations computation	
 	if(PRM.concentrations!=0){	
 		createFile(stat_file_7);
 		char *tfn7 = new char[stat_file_7.length()+1];
 		strcpy(tfn7, stat_file_7.c_str());     
 		ofstream fout7(tfn7, ios::app);
 			
-
-///////////================================================================= case 3d 	
-		if(PRM.concentrations==3){
+		if(PRM.concentrations==3){ //average on y (?)
 			int num_of_div_x=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
 			int num_of_div_y=PRM.SIM_DOMAIN_WIDTH_Y/double(100.00);
 			int num_of_div_z=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
@@ -2102,11 +2005,7 @@ void Statistics::print_statistics(){
 				}
 				fout7<<endl<<endl<<endl;
 			}
-		}
-///////////================================================================= case 3d averaged on y	
-
-///////////================================================================= case rotational 
-		else{
+		} else{ // rotational
 			int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
 			int num_of_div_on_r_stat=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
 			
@@ -2147,12 +2046,8 @@ void Statistics::print_statistics(){
 				fout7<<endl;
 			}
 		}
-///////////================================================================= case rotational 		
-		
-			
 		fout7.close();
 	}
-	
 	
 // currents computation	(ZERO THRESHOLD, one threshold at z=0)
 	if(PRM.currents_ZT){	
@@ -2266,7 +2161,6 @@ void Statistics::print_statistics(){
 		//~ }
 		
 		//~ foutD.close();
-		
 	}
 	
 	return;
@@ -2274,7 +2168,7 @@ void Statistics::print_statistics(){
 
 void Statistics::reset_after_restarting_from_the_beginning(){
 	
-	if(PRM.potential!=0){	
+	if(PRM.potential == 1){	
 		for(int i=0; i<50; i++){
 			for(int j=0; j<2001; j++){
 				POTENTIALS_ON_AXIS[i][j]=0.00;

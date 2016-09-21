@@ -282,12 +282,12 @@ class Parameters{
 	double PREP_STEPS;
 	double SIM_STEPS;
 	double FIRST_STEP;
-	//~ long int step;
 	
 	int STATS_OUT_FREQ;
 	double STATS_DZ;
 	
 	bool channel_pdb_files;
+	bool trajectory;
 	bool flux;
 	bool rdf;
 	bool vel_distribution;
@@ -616,9 +616,6 @@ class Statistics{
 	double DELTA_Z;
 	
 	vector <int> ions_this_step;
-	
-// ions position
-	vector < vector < double > > ions_pos;
 	
 // flux computation	
 	vector < vector < double > > concentrations_along_z;

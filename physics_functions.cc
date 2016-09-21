@@ -425,18 +425,14 @@ void compute_force_on_ions(){
 	
 	//compute the potential along the axis
 	if(PRM.potential!=0){
-		
 		if(STEPS[INDEX_LAST_STEP]>=0){
-		
 			for(int i=0; i<2001; i++){
-				
 				double ics=0;
 				double ipsilon=0;
 				double zeta=POINTS_ON_AXIS[i];
-				
 				//external field
 				POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i]=PRM.APPLIED_POTENTIAL*(PRM.MAX_Z-1e12*POINTS_ON_AXIS[i])/(PRM.SIM_DOMAIN_WIDTH_Z);
-				
+				//cerr << "DEBUG " << STEPS[INDEX_LAST_STEP] << "\t" << i << "\t" << POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i] << endl;
 				//membrane charges
 				if(!membrane_charges.empty()){
 					for(int charge_index=0; charge_index<membrane_charges.size(); charge_index++){
@@ -452,7 +448,6 @@ void compute_force_on_ions(){
 						}	
 					}		
 				}
-				
 				// induced charges
 				if(PRM.EPS_W!=PRM.EPS_MEM){
 					for(int surface_index=0; surface_index<NUM_OF_SURFACES; surface_index++){
@@ -461,14 +456,12 @@ void compute_force_on_ions(){
 						double charge_z=SURFACES[surface_index].center_z;				
 						apply_periodic_boundary(ics, ipsilon, zeta, charge_x, charge_y, charge_z);
 						double distance=1e12*get_distance(ics, ipsilon, zeta, charge_x, charge_y, charge_z);
-
 						if(distance<20000){
 							double surf_charge_valence=(vector_h[surface_index]*surfaces.at(surface_index).area)/Q;
 							POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i]+=surf_charge_valence*POTENTIAL_C[int(distance)];
 						}	
 					}
 				}
-				
 				// ions
 				for(int ion_index=0; ion_index<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; ion_index++){
 					double ion_x=IONS[INDEX_LAST_STEP][ion_index].x;
@@ -476,24 +469,17 @@ void compute_force_on_ions(){
 					double ion_z=IONS[INDEX_LAST_STEP][ion_index].z;			
 					apply_periodic_boundary(ics, ipsilon, zeta, ion_x, ion_y, ion_z);
 					double distance=1e12*get_distance(ics, ipsilon, zeta, ion_x, ion_y, ion_z);			
-					
 					if(distance<20000){
 						POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i]+=IONS[INDEX_LAST_STEP][ion_index].DW_valence*POTENTIAL_C[int(distance)];
 					}					
 				}
-				
-				
+				//cerr << "DEBUG " << STEPS[INDEX_LAST_STEP] << "\t" << i << "\t" << POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i] << endl;
 				// use microVolts for accumulation in computing the average
 				POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i]=1e-6*POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i];
 			}
 		}
 	}
-	
-	
-	
-	
 	return;
-	
 }
 
 //#################################################

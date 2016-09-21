@@ -217,25 +217,5 @@ int channel_same_configuration_counter=0;
 int filter_same_configuration_counter=0;
 
 int pdb_file_index=0;
-vector < vector <string> > pdb_names;
-vector < vector <int> > pdb_xs;
-vector < vector <int> > pdb_ys;
-vector < vector <int> > pdb_zs;
-
-vector <string> pdb_names_0;
-vector <int> pdb_xs_0;
-vector <int> pdb_ys_0;
-vector <int> pdb_zs_0;
-
-vector <string> pdb_names_this_step;
-vector <int> pdb_xs_this_step;
-vector <int> pdb_ys_this_step;
-vector <int> pdb_zs_this_step;
-
-vector <int> pdb_ion_species;
-
-
-
-
 
 #endif

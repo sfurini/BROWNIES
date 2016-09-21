@@ -216,6 +216,9 @@ void retrieve_parameters(string conf_file){
 							else if(getTokenbyNumber(buffer, "=", 1).compare("channel_pdb_files")==0){
 								PRM.channel_pdb_files=atoi(getTokenbyNumber(buffer, "=", 2).c_str());
 							}
+							else if(getTokenbyNumber(buffer, "=", 1).compare("trajectory")==0){
+								PRM.trajectory=atoi(getTokenbyNumber(buffer, "=", 2).c_str());
+							}
 							else if(getTokenbyNumber(buffer, "=", 1).compare("flux")==0){
 								PRM.flux=atoi(getTokenbyNumber(buffer, "=", 2).c_str());
 							}
@@ -1262,12 +1265,13 @@ void check_parameters(){
 		cout << "WRONG PARAMETER! SHORT_RANGE_EXP must be >=0 (12 default for L-J)." <<endl;
 		exit(5);
 	}
-	if(!(PRM.potential==0 || PRM.potential==1 || PRM.potential==2 || PRM.potential==3)){
+	//if(!(PRM.potential==0 || PRM.potential==1 || PRM.potential==2 || PRM.potential==3)){
+	if(!(PRM.potential==0 || PRM.potential==1)){
 		cout << "WRONG PARAMETER! STATISTICS - potential must be chosen in:" <<endl;
-		cout << "0 - no potential statistics collected"<<endl;
-		cout << "1 - 1-D potential statistics collected along channel axis"<<endl;
-		cout << "2 - 2-D potential statistics collected (rotational symmetry)"<<endl;
-		cout << "3 - 3-D potential statistics collected"<<endl;
+		cout << "\t0 - no potential statistics collected"<<endl;
+		cout << "\t1 - 1-D potential statistics collected along channel axis"<<endl;
+		//cout << "\t2 - 2-D potential statistics collected (rotational symmetry)"<<endl;
+		//cout << "\t3 - 3-D potential statistics collected"<<endl;
 		exit(5);
 	}
 	if(!(PRM.concentrations==0 || PRM.concentrations==2 || PRM.concentrations==3)){
@@ -1448,17 +1452,24 @@ void print_PDB_filter_file(){
 	return;
 }
 
-void print_ions_positions(){
-	string ions_file=PRM.PREFIX+".kxyz";
+void print_ions_trajectories(){
+	string ions_file=PRM.PREFIX+".trajectory.dat";
 	char *tfn = new char[ions_file.length()+1];
 	strcpy(tfn, ions_file.c_str());     
 	ofstream fout(tfn, ios::app);
 	fout << setprecision(5);
-	
+	fout << "// step = " << INDEX_LAST_STEP << endl;
 	for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){ 
-		fout << IONS[INDEX_STAT_STEP][i].name << "\t" << 1e10*IONS[INDEX_STAT_STEP][i].x << "\t" << 1e10*IONS[INDEX_STAT_STEP][i].y << "\t" << 1e10*IONS[INDEX_STAT_STEP][i].z << endl;
+		fout<<i<<"\t"
+			<<IONS[INDEX_LAST_STEP][i].kind<<"\t"
+			<<IONS[INDEX_LAST_STEP][i].x<<"\t"
+			<<IONS[INDEX_LAST_STEP][i].y<<"\t"
+			<<IONS[INDEX_LAST_STEP][i].z<<"\t"
+			<<IONS[INDEX_LAST_STEP][i].x_prev<<"\t"
+			<<IONS[INDEX_LAST_STEP][i].y_prev<<"\t"
+			<<IONS[INDEX_LAST_STEP][i].z_prev<<"\t"
+			<<endl;
 	}
-	fout<< "END STEP "<< last_step_statistics << endl;
 	fout.close();
 	return;
 }
@@ -3246,15 +3257,16 @@ void print_conf_file(ostream& stream){
 }
 
 void initialize_output_potential(){
-	
 	double left_limit=1e-12*(PRM.LEFT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
 	double right_limit=1e-12*(PRM.RIGHT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
-	
-	
-	if(PRM.potential!=0){
+	//cerr << "DEBUG MIN_Z = " << PRM.MIN_Z << endl;
+	//cerr << "DEBUG MAX_Z = " << PRM.MAX_Z << endl;
+	//cerr << "DEBUG LEFT_CELL_MIN_Z = " << PRM.LEFT_CELL_MIN_Z << endl;
+	//cerr << "DEBUG OUTER_REGION_WIDTH = " << PRM.OUTER_REGION_WIDTH << endl;
+	//cerr << "DEBUG left_limit = " << left_limit << endl;
+	if(PRM.potential == 1){
 		double exponent=1.50;
 		int index=0;
-		
 		for(int i=1000;i>=0; i--){
 			POINTS_ON_AXIS[index]=left_limit*pow(double(i),exponent)/pow(double(1000),exponent);
 			index++;
@@ -3263,7 +3275,6 @@ void initialize_output_potential(){
 			POINTS_ON_AXIS[index]=right_limit*pow(double(i),exponent)/pow(double(1000),exponent);
 			index++;
 		}
-		
 		for(int i=0; i<50; i++){
 			for(int j=0; j<2001; j++){
 				POTENTIALS_ON_AXIS[i][j]=0.00;
@@ -3273,7 +3284,5 @@ void initialize_output_potential(){
 			AVERAGE_POTENTIALS_ON_AXIS[j]=0.00;
 		}
 	}
-	
 	return;
-	
 }

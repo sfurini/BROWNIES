@@ -99,7 +99,7 @@ void check_parameters();
 
 void print_PDB_filter_file();
 
-void print_ions_positions();
+void print_ions_trajectories();
 
 void print_PDB_file(vector <Ion>& ions);
 

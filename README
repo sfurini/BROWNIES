@@ -5,15 +5,37 @@ Format input.conf
 	Lines that start with '#' are comments
 	Lines without a character equal to '=' are ignored
 
+potential:
+	0 - no potential statistics collected
+	1 - 1-D potential statistics collected along channel axis
+	2 - 2-D potential statistics collected (rotational symmetry)
+	3 - 3-D potential statistics collected
+
+channel_pdb_files:
+	1 - set of snapshots of the ions
+
+trajectory:
+	1 - ions trajecotries
+
 Output files
 
 .curr_ZT
 	time	istantaneus_current_ion_i	average_current_ion_i
 	[s]	[A]				[A]
 
-.flux
+.pot [if potential == 1]
+	z	potential
+	[A]	[mV]
+The potential is calculated only in the region of BATH and MEMBRANE,
+	not CONTROL_CELL and OUTER_REGION
+
+.flux [if flux == 1]
 	z	flux_ion_i	concentration_ion_i	velocity_ion_i
-	[Å]	[ions/s]	[ion/Å(?)]		[m/s]
+	[Å]	[ions/s]	[ion/Å]			[m/s]
+The velocity is not the average velocity calculated from the trajectories
+It is flux/concentration
+The concentration is the average number of ions in the slide divided by the
+	lenght of the slide along z
 
 _draw_sim_domain.tcl
 	Use in VMD to display the simulation domain
@@ -84,3 +106,4 @@ Another strategy to define fixed charges is to use an input file (FIXED_CHARGES_
 		|                                                    | OUTER_REGION_WIDTH
 		|                                                    |
 		------------------------------------------------------
+

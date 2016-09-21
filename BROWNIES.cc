@@ -223,61 +223,6 @@ int main(int argc,char *argv[]){
 	for(int ion_index=0; ion_index<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; ion_index++){
 		cout << ion_index<< " " << IONS[INDEX_LAST_STEP][ion_index].name<< " "<< IONS[INDEX_LAST_STEP][ion_index].kind<< " "<< 1e10*IONS[INDEX_LAST_STEP][ion_index].x <<" "<< 1e10*IONS[INDEX_LAST_STEP][ion_index].y<<" "<< 1e10*IONS[INDEX_LAST_STEP][ion_index].z<<endl;
 	}
-	//configure pdb_file_structure
-	vector <string> already_inserted;
-	if(PRM.channel_pdb_files){
-		cerr << "DEBUG main NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP] = " << NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP] << endl;
-		for(int ion_index=0; ion_index<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; ion_index++){
-			if(IONS[INDEX_LAST_STEP][ion_index].kind>=31){
-				pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
-				pdb_xs_0.push_back(20000);
-				pdb_ys_0.push_back(20000);
-				pdb_zs_0.push_back(0);
-			}
-			else{
-				if(already_inserted.empty()){
-					pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
-					pdb_xs_0.push_back(20000);
-					pdb_ys_0.push_back(20000);
-					pdb_zs_0.push_back(0);
-					pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
-					pdb_xs_0.push_back(20000);
-					pdb_ys_0.push_back(20000);
-					pdb_zs_0.push_back(0);
-					pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
-					pdb_xs_0.push_back(20000);
-					pdb_ys_0.push_back(20000);
-					pdb_zs_0.push_back(0);
-					already_inserted.push_back(IONS[INDEX_LAST_STEP][ion_index].name);					
-					pdb_ion_species.push_back(IONS[INDEX_LAST_STEP][ion_index].kind);
-				}
-				else{
-					bool canInsert=true;
-					for(int jjj=0; jjj<already_inserted.size(); jjj++){
-						if(IONS[INDEX_LAST_STEP][ion_index].name.compare(already_inserted.at(jjj))==0){
-							canInsert=false;
-						}
-					}
-					if(canInsert){							
-						pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
-						pdb_xs_0.push_back(20000);
-						pdb_ys_0.push_back(20000);
-						pdb_zs_0.push_back(0);
-						pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
-						pdb_xs_0.push_back(20000);
-						pdb_ys_0.push_back(20000);
-						pdb_zs_0.push_back(0);
-						pdb_names_0.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
-						pdb_xs_0.push_back(20000);
-						pdb_ys_0.push_back(20000);
-						pdb_zs_0.push_back(0);
-						already_inserted.push_back(IONS[INDEX_LAST_STEP][ion_index].name);
-						pdb_ion_species.push_back(IONS[INDEX_LAST_STEP][ion_index].kind);
-					}
-				}
-			}
-		}
-	}
 	
 //###############################################
 //		SIMULATION
@@ -331,31 +276,28 @@ int main(int argc,char *argv[]){
 	STEPS[INDEX_LAST_STEP]=PRM.FIRST_STEP-1;
 	STEPS[INDEX_STAT_STEP]=PRM.FIRST_STEP-1;
 	indexesGap=0;
-	//SIMONE-BEGIN
-	string trajectory_file=PRM.PREFIX + ".trajectory.dat";
-	char *tfn1 = new char[trajectory_file.length()+1];
-	strcpy(tfn1, trajectory_file.c_str());
-	ofstream fout_simone(tfn1, ios::app);
-	//SIMONE-END
+	  
 	for(step=PRM.FIRST_STEP; step<=PRM.SIM_STEPS; step++){
-//======================================================================================
-//		00		SIMONE
-		if (step > 0) {
-			fout_simone << "// step = " << INDEX_LAST_STEP << "\t" << step << endl;
-			for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; i++){
-				fout_simone<<i<<"\t"
-					<<IONS[INDEX_LAST_STEP][i].kind<<"\t"
-					<<IONS[INDEX_LAST_STEP][i].x<<"\t"
-					<<IONS[INDEX_LAST_STEP][i].y<<"\t"
-					<<IONS[INDEX_LAST_STEP][i].z<<"\t"
-					<<IONS[INDEX_LAST_STEP][i].x_prev<<"\t"
-					<<IONS[INDEX_LAST_STEP][i].y_prev<<"\t"
-					<<IONS[INDEX_LAST_STEP][i].z_prev<<"\t"
-					<<endl;
-			}
+
+		if ((PRM.trajectory != 0) && (step > PRM.PREP_STEPS)) {
+			print_ions_trajectories();
 		}
-		fout_simone << flush;
-//======================================================================================			
+		//if (step > 0) {
+		//	fout_simone << "// step = " << INDEX_LAST_STEP << "\t" << step << endl;
+		//	for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; i++){
+		//		fout_simone<<i<<"\t"
+		//			<<IONS[INDEX_LAST_STEP][i].kind<<"\t"
+		//			<<IONS[INDEX_LAST_STEP][i].x<<"\t"
+		//			<<IONS[INDEX_LAST_STEP][i].y<<"\t"
+		//			<<IONS[INDEX_LAST_STEP][i].z<<"\t"
+		//			<<IONS[INDEX_LAST_STEP][i].x_prev<<"\t"
+		//			<<IONS[INDEX_LAST_STEP][i].y_prev<<"\t"
+		//			<<IONS[INDEX_LAST_STEP][i].z_prev<<"\t"
+		//			<<endl;
+		//	}
+		//}
+		//fout_simone << flush;
+  
 //======================================================================================
 //		01		checks and output handling	
 //======================================================================================			
@@ -523,5 +465,4 @@ int main(int argc,char *argv[]){
 		free(STAT.vector_h_RAMO);
 	}	
 	return 0;
-	fout_simone.close(); //SIMONE
 }
