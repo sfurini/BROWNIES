@@ -24,3 +24,63 @@ _draw_tiles.tcl
 _mem_charges.pdbrq
 	Fixed charges
 
+
+-------------------------------------------------------------------------------
+              DEFINITION OF THE CHANNEL GEOMETRY AND FIXED CHARGES
+-------------------------------------------------------------------------------
+
+Set SIM_TYPE = PORE
+
+Set the following parameters to define the channel:
+MEMBRANE_WIDTH = [A] Width of the membrane along z; The membrane goes from -0.5*MEMBRANE_WIDTH to +0.5*MEMBRANE_WIDTH
+[BATH/CONTROL_CELL/OUTER_REGION]_WIDTH = [A] See below;
+	The simulation domain goes from: -0.5*MEMBRANE_WIDTH-BATH_WIDTH-CONTROL_CELL_WIDTH-OUTER_REGION_WIDTH
+				     to: +0.5*MEMBRANE_WIDTH-BATH_WIDTH+CONTROL_CELL_WIDTH+OUTER_REGION_WIDTH
+SIM_DOMAIN_WIDTH_[X/Y] = [A] Width of the simulation box along x/y;
+	The simulation box goes from: -0.5*SIMULATION_DOMAIN_WIDTH_[X/Y]
+				  to: +0.5*SIMULATION_DOMAIN_WIDTH_[X/Y]
+[LEFT/RIGHT]_VESTIBULE_CURVATURE_RADIUS = [A] Parameter R_[L/R] in channel_examples.pdf
+CHANNEL_PROFILE_POINT = z [A] = radius [A] See panel d in channel_examples.pdf
+CHARGE_PROFILE_POINT = z [A] = radius [A] = n [# charges] = q [e charge value] See panel e-f in channel_examples.pdf
+
+Another strategy to define fixed charges is to use an input file (FIXED_CHARGES_FILE)
+
+
+
+-0.5*SIM_DOMAIN_WIDTH_X/Y				  +0.5*SIM_DOMAIN_WIDTH_X/Y
+				SIM_DOMAIN_WIDTH_X/Y
+		------------------------------------------------------
+		|                                                    |
+		|                                                    | OUTER_REGION_WIDTH
+		|                                                    |
+		------------------------------------------------------
+		|                                                    | CONTROL_CELL_WIDTH
+		------------------------------------------------------
+		| EPS_W                                              |
+		|                                                    |
+		|                                                    |
+		|                                                    | BATH_WIDTH
+		|                                                    |
+		|                                                    |
+		|          LEFT_VESTIBULE_CURVATURE_RADIUS           |
+		-------------------                -------------------
+		|*EPS_MEM*********|                |*****************|
+		|*****************|                |*****************|
+		|*****************|                |*****************| MEMBRANE_WIDTH
+		|*****************|                |*****************|
+		|*****************|                |*****************|
+		-------------------                -------------------
+		|          RIGHT_VESTIBULE_CURVATURE_RADIUS          |
+		|                                                    |
+		|                                                    |
+		|                                                    | BATH_WIDTH
+		|                                                    |
+		|                                                    |
+		|                                                    |
+		------------------------------------------------------
+		|                                                    | CONTROL_CELL_WIDTH
+		------------------------------------------------------
+		|                                                    |
+		|                                                    | OUTER_REGION_WIDTH
+		|                                                    |
+		------------------------------------------------------
