@@ -279,24 +279,9 @@ int main(int argc,char *argv[]){
 	  
 	for(step=PRM.FIRST_STEP; step<=PRM.SIM_STEPS; step++){
 
-		if ((PRM.trajectory != 0) && (step > PRM.PREP_STEPS)) {
+		if ((PRM.trajectory != 0) && (step > 0)) {
 			print_ions_trajectories();
 		}
-		//if (step > 0) {
-		//	fout_simone << "// step = " << INDEX_LAST_STEP << "\t" << step << endl;
-		//	for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; i++){
-		//		fout_simone<<i<<"\t"
-		//			<<IONS[INDEX_LAST_STEP][i].kind<<"\t"
-		//			<<IONS[INDEX_LAST_STEP][i].x<<"\t"
-		//			<<IONS[INDEX_LAST_STEP][i].y<<"\t"
-		//			<<IONS[INDEX_LAST_STEP][i].z<<"\t"
-		//			<<IONS[INDEX_LAST_STEP][i].x_prev<<"\t"
-		//			<<IONS[INDEX_LAST_STEP][i].y_prev<<"\t"
-		//			<<IONS[INDEX_LAST_STEP][i].z_prev<<"\t"
-		//			<<endl;
-		//	}
-		//}
-		//fout_simone << flush;
   
 //======================================================================================
 //		01		checks and output handling	

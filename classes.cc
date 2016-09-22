@@ -687,8 +687,6 @@ void Statistics::reset_statistics(){
 		last_output_filter_configuration[a]=0;
 	}
 
-	pdb_file_index=1;
-	
 	stat_file_1="";
 	stat_file_2="";
 	stat_file_3="";
@@ -834,20 +832,13 @@ void Statistics::reset_statistics(){
 	vector <double> aux_vec_1;
 	vector <double> aux_vec_2;
 
-// ions position
-	if(PRM.channel_pdb_files){
-		string cmd="rm " + PRM.PREFIX + "*.pdb ";
-		char *command = new char[cmd.length()+1];
-		strcpy(command, cmd.c_str()); 	
-		int aaaai=system(command);		
-	}
-
 // ions trajectories
 	if(PRM.trajectory){
 		string trajectory_file=PRM.PREFIX + ".trajectory.dat";
 		char *tfn1 = new char[trajectory_file.length()+1];
 		strcpy(tfn1, trajectory_file.c_str());
-		ofstream fout_simone(tfn1, ios::out);
+		ofstream fout(tfn1, ios::out);
+		fout.close();
 	}
 	
 // flux
@@ -1069,10 +1060,6 @@ void Statistics::reset_statistics(){
 		}
 	}
 	
-	if(PRM.channel_pdb_files){
-		createFile(stat_file_1);
-	}
-
 	if(PRM.flux){
 		createFile(stat_file_2);
 		createFile(gnuplot_file_2);
@@ -1747,43 +1734,12 @@ void Statistics::print_statistics(){
 	
 // ions position
 	if(PRM.channel_pdb_files){
-		
-		int outfileIndex=pdb_file_index+1;
-		string s_outfileIndex;
-		stringstream ss_outfileIndex;
-		ss_outfileIndex << outfileIndex;
-		ss_outfileIndex >> s_outfileIndex;
-		
-		if(outfileIndex<10){
-			stat_file_1=PRM.PREFIX + "_000000"+ s_outfileIndex +".pdb";
-		}
-		else if(outfileIndex>=10 && outfileIndex<100){
-			stat_file_1=PRM.PREFIX + "_00000"+ s_outfileIndex +".pdb";
-		}
-		else if(outfileIndex>=100 && outfileIndex<1000){
-			stat_file_1=PRM.PREFIX + "_0000"+ s_outfileIndex +".pdb";
-		}
-		else if(outfileIndex>=1000 && outfileIndex<10000){
-			stat_file_1=PRM.PREFIX + "_000"+ s_outfileIndex +".pdb";
-		}
-		else if(outfileIndex>=10000 && outfileIndex<100000){
-			stat_file_1=PRM.PREFIX + "_00"+ s_outfileIndex +".pdb";
-		}
-		else if(outfileIndex>=100000 && outfileIndex<1000000){
-			stat_file_1=PRM.PREFIX + "_0"+ s_outfileIndex +".pdb";
-		}
-		else{
-			stat_file_1=PRM.PREFIX + "_"+ s_outfileIndex +".pdb";
-		}
-		
-		createFile(stat_file_1);
-		
-		char *tfn1 = new char[stat_file_1.length()+1];
-		strcpy(tfn1, stat_file_1.c_str());     
-		ofstream fout1(tfn1, ios::app);
-		
+		string trajectory_file=PRM.PREFIX + ".pdb";
+		char *tfn1 = new char[trajectory_file.length()+1];
+		strcpy(tfn1, trajectory_file.c_str());
+		ofstream fout(tfn1, ios::out);
 		for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; i++){
-			fout1<<"ATOM  "<<setw(5)<<i+1<<" "
+			fout<<"ATOM  "<<setw(5)<<i+1<<" "
 				<<setw(4)<<IONS[INDEX_LAST_STEP][i].name<<" "
 				<<setw(3)<<IONS[INDEX_LAST_STEP][i].name<<" "
 				<<setw(5)<<i+1<<"    "			
@@ -1794,8 +1750,7 @@ void Statistics::print_statistics(){
 				<<setw(6)<<"0.0"		//tempFactor
 				<<endl;
 		}
-		fout1.close();
-		pdb_file_index++;
+		fout.close();
 	}
 	
 // flux
@@ -1803,19 +1758,40 @@ void Statistics::print_statistics(){
 		createFile(stat_file_2);
 		char *tfn2 = new char[stat_file_2.length()+1];
 		strcpy(tfn2, stat_file_2.c_str());     
-		ofstream fout2(tfn2, ios::app);
+		ofstream fout(tfn2, ios::app);
+		float z_pm,section_area_pm2, volume_slice_A3, ionsA3_2_mol, concentration_ions_slice;
+		ionsA3_2_mol = 1e27/AVOGADRO;
 		for(int i=0; i<num_of_dz; i++){
-			fout2 << (PRM.MIN_Z+double(i)*DELTA_Z+double(0.50)*DELTA_Z)/double(100.00) << " ";
-			for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
-				if(PRM.ions_to_simulate.at(is)){
-					fout2 << currents_ZT.at(is)/double(STEPS[INDEX_STAT_STEP]+1)/sample_ions[is].charge << " " 
-					      << concentrations_along_z.at(is).at(i)/(1e-2*DELTA_Z*double(STEPS[INDEX_STAT_STEP])) << " " 
-					      << (currents_ZT.at(is)/double(STEPS[INDEX_STAT_STEP]+1)/sample_ions[is].charge)/concentrations_along_z.at(is).at(i)/(1e-2*DELTA_Z*double(STEPS[INDEX_STAT_STEP])) << " " ;
+			z_pm = (PRM.MIN_Z+double(i)*DELTA_Z+double(0.50)*DELTA_Z);
+			if(PRM.SIM_TYPE.compare("BULK") == 0){
+				section_area_pm2 = PRM.SIM_DOMAIN_WIDTH_X*PRM.SIM_DOMAIN_WIDTH_Y;
+			} else {
+				if (((z_pm+double(0.50)*DELTA_Z) < -0.5*PRM.MEMBRANE_WIDTH) || ((z_pm-double(0.50)*DELTA_Z) > 0.5*PRM.MEMBRANE_WIDTH)) {
+					section_area_pm2 = PRM.SIM_DOMAIN_WIDTH_X*PRM.SIM_DOMAIN_WIDTH_Y;
+				} else {
+					int ind_in_limits = round(z_pm + 0.5*PRM.MEMBRANE_WIDTH) - 1;
+					if (ind_in_limits < 0) {
+						ind_in_limits = 0;
+					} else if (ind_in_limits >= limits.size()) {
+						ind_in_limits =  limits.size() - 1;
+					}
+					section_area_pm2 = M_PI*limits.at(ind_in_limits)*limits.at(ind_in_limits);
 				}
 			}
-			fout2<<endl;
+			fout << z_pm*1e-2 << "\t" << section_area_pm2*1e-4 << "\t"; // output is in A
+			volume_slice_A3 = DELTA_Z*section_area_pm2*1e-6;
+			for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
+				if(PRM.ions_to_simulate.at(is)){
+					concentration_ions_slice = concentrations_along_z.at(is).at(i)/double(STEPS[INDEX_STAT_STEP]);
+					fout << currents_ZT.at(is)/double(STEPS[INDEX_STAT_STEP]+1)/sample_ions[is].charge << " "
+					     << concentration_ions_slice << " " 
+					     << ionsA3_2_mol*concentration_ions_slice/volume_slice_A3 << " " 
+					     << (currents_ZT.at(is)/double(STEPS[INDEX_STAT_STEP]+1)/sample_ions[is].charge)/concentrations_along_z.at(is).at(i)/(1e-2*DELTA_Z*double(STEPS[INDEX_STAT_STEP])) << " " ;
+				}
+			}
+			fout<<endl;
 		}
-		fout2.close();
+		fout.close();
 	}
 
 	
