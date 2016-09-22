@@ -80,22 +80,15 @@ vector<RadialPoint> channelProfile;
 
 vector <Charge> membrane_charges;
 
-
-
 vector < vector < vector < double > > > FORCE_SR;
 vector < vector < vector < double > > > ENERGY_SR;	
 vector < vector < vector < double > > > FORCE_OTHER;
 vector < vector < vector < double > > > ENERGY_OTHER;
 
-
-
 double ENERGY_C[20000];
 double POTENTIAL_C[20000];
 double FIELD_C[20000];
 double FORCE_C[20000];
-
-
-
 
 vector < vector < vector < vector < double  > > > > SR_dielectric_boundary;
 
@@ -215,7 +208,5 @@ int last_output_filter_configuration[5];
 
 int channel_same_configuration_counter=0;
 int filter_same_configuration_counter=0;
-
-int pdb_file_index=0;
 
 #endif
