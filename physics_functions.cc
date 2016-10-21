@@ -420,9 +420,6 @@ void compute_force_on_ions(){
 		
 	}
 	
-	
-	
-	
 	//compute the potential along the axis
 	if(PRM.potential!=0){
 		if(STEPS[INDEX_LAST_STEP]>=0){
@@ -436,13 +433,11 @@ void compute_force_on_ions(){
 				//membrane charges
 				if(!membrane_charges.empty()){
 					for(int charge_index=0; charge_index<membrane_charges.size(); charge_index++){
-						
 						double charge_x=membrane_charges.at(charge_index).x;
 						double charge_y=membrane_charges.at(charge_index).y;
 						double charge_z=membrane_charges.at(charge_index).z;				
 						apply_periodic_boundary(ics, ipsilon, zeta, charge_x, charge_y, charge_z);
 						double distance=1e12*get_distance(ics, ipsilon, zeta, charge_x, charge_y, charge_z);	
-
 						if(distance<20000){
 							POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i]+=membrane_charges.at(charge_index).DW_valence*POTENTIAL_C[int(distance)];
 						}	

@@ -8,8 +8,8 @@ Format input.conf
 potential:
 	0 - no potential statistics collected
 	1 - 1-D potential statistics collected along channel axis
-	2 - 2-D potential statistics collected (rotational symmetry)
-	3 - 3-D potential statistics collected
+	# NOT IMPLEMENTED 2 - 2-D potential statistics collected (rotational symmetry)
+	# NOT IMPLEMENTED 3 - 3-D potential statistics collected
 
 channel_pdb_files:
 	1 - set of snapshots of the ions
