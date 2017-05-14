@@ -336,9 +336,9 @@ ostream& operator<<(ostream& stream, Parameters& PRM){
 //============== PAGE 2 - SIM. DOMAIN	
 	stream << "\nSIMULATION TYPE: " << "\t" << PRM.SIM_TYPE << endl;  
 	stream << "PREFIX: " << "\t" << PRM.PREFIX << endl <<endl;  
-	
 	stream << "SIMULATION DOMAIN WIDTH - X [pm]: " << "\t" << PRM.SIM_DOMAIN_WIDTH_X << endl;  
 	stream << "SIMULATION DOMAIN WIDTH - Y [pm]: " << "\t" << PRM.SIM_DOMAIN_WIDTH_Y << endl;  
+	stream << "SIMULATION DOMAIN WIDTH - Z [pm]: " << "\t" << PRM.SIM_DOMAIN_WIDTH_Z << endl;  
 	stream << "CONTROL CELL WIDTH [pm]: " << "\t\t" << PRM.CONTROL_CELL_WIDTH << endl;  
 	stream << "BATH WIDTH [pm]: " << "\t\t" << PRM.BATH_WIDTH << endl;  
 	if(PRM.SIM_TYPE.compare("BULK")!=0){
@@ -350,7 +350,6 @@ ostream& operator<<(ostream& stream, Parameters& PRM){
 		stream << "RIGHT VEST. CURV. RADIUS [pm]: " << "\t" << PRM.RIGHT_VESTIBULE_CURVATURE_RADIUS << endl;  
 		stream << "RIGHT VEST. MIN. CHANNEL RADIUS [pm]: " << "\t" << PRM.RIGHT_VESTIBULE_MIN_CHANNEL_RADIUS << endl;  
 	}
-	
 //============== PAGE 3 - MOTION	
 	stream << endl << "DELTA T [s]:\t\t"<< PRM.DELTA_T << endl;
 	stream << "SIMULATION STEPS:\t\t"<< PRM.SIM_STEPS << endl;
@@ -366,9 +365,6 @@ ostream& operator<<(ostream& stream, Parameters& PRM){
 	}
 	stream << "TEMPERATURE:\t\t"<< PRM.TEMPERATURE << endl;
 	stream << "RANDOM NUMBER GEN. SEED:\t\t"<< PRM.SEED << endl;
-	
-	
-	
 //============== PAGE 4 - ELECTROSTATICS	
 	stream << endl << "APPLIED POTENTIAL [V]:\t\t"<< PRM.APPLIED_POTENTIAL << endl;
 	stream << "EPS_W:\t\t"<< PRM.EPS_W << endl;
@@ -381,9 +377,6 @@ ostream& operator<<(ostream& stream, Parameters& PRM){
 		}
 		stream << "ICC - SUBTILES PER TILE:\t\t"<< PRM.NUM_OF_SUB_DIV << endl;
 	}
-	
-	
-
 //============== PAGE 5 - ION CONCENTRATIONS	
 	stream << endl << "LEFT KCL CONC [M]:\t\t"<< PRM.CONC_LEFT_KCL << endl;	
 	stream << "LEFT NACL CONC [M]:\t\t"<< PRM.CONC_LEFT_NACL << endl;	
@@ -658,15 +651,14 @@ void Statistics::reset_statistics(){
 	instant_currents_RS.clear();
 	currents_ZT.clear();
 	instant_currents_ZT.clear();
-
 	A_total_charge=0;
 	C_total_charge.clear();
 	C_total_charge_type.clear();
 	concs_3D.clear();
 	radial_concs.clear();
-	potentials_3D.clear();
+	average_radial_potentials.clear();
 	radial_potentials.clear();
-	potentials_on_axis.clear();
+	//potentials_on_axis.clear();
 	
 	for(int a=0; a<3; a++){
 		for(int b=0; b<3; b++){
@@ -924,23 +916,64 @@ void Statistics::reset_statistics(){
 		}
 	}	
 
-// induced charge computation
-	
-// potential
-	if(PRM.potential == 1){
-		initialize_output_potential();
-	}	
-	
-// concentrations computation
-	if(PRM.concentrations!=0){
-		
+	// potential
+	if (PRM.potential > 0) {
+		double left_limit=(PRM.LEFT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
+		double right_limit=(PRM.RIGHT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
+		int num_of_div_on_z_stat=(right_limit - left_limit)/double(100.00);
+		double double_zero=0.00;
+		for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+			average_potentials_on_axis.push_back(double_zero);
+		}
+		for(int i=0; i<50; i++){
+			potentials_on_axis.push_back(average_potentials_on_axis);
+		}
+		if (PRM.potential == 2) { // rotational simmetry
+			int num_of_div_on_r_stat=0.5*PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
+			vector < double > aux_vec1;  
+			cout << "DEBUG> Collecting statistics for 2D potential" << endl;
+			cout << "DEBUG>\t number of samples along z = " << num_of_div_on_z_stat << endl;
+			cout << "DEBUG>\t number of samples along r = " << num_of_div_on_r_stat << endl;
+			for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+				aux_vec1.clear();
+				for(int ir=0; ir<num_of_div_on_r_stat; ir++){
+					aux_vec1.push_back(double_zero);	
+				}
+				average_radial_potentials.push_back(aux_vec1);
+			}
+			for(int i=0; i<50; i++){
+				radial_potentials.push_back(average_radial_potentials);
+			}
+		}
+	}
+	// concentrations
+	if(PRM.concentrations != 0){
 		double double_zero=0.00;
 		vector < double > aux_vec1;  
 		vector < vector < double > > aux_vec2;  
-		vector < vector < vector < double > > > aux_vec3;  
-		
-		
-		if(PRM.concentrations==3){
+		if(PRM.concentrations == 2){ // rotational simmetry
+			// statistics are collected over a 2D grid with steps equal to 1 A == 100 pm
+			int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
+			int num_of_div_on_r_stat=0.5*PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
+			for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
+				aux_vec2.clear();
+				if(PRM.ions_to_simulate.at(is)){
+					for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+						aux_vec1.clear();
+						for(int ir=0; ir<num_of_div_on_r_stat; ir++){
+							aux_vec1.push_back(double_zero);	
+						}
+						aux_vec2.push_back(aux_vec1);
+						aux_vec1.clear();
+					}
+				}
+				radial_concs.push_back(aux_vec2);
+				aux_vec2.clear();
+			}
+		}
+		else if (PRM.concentrations == 3){ // 3D data
+			// statistics are collected over a 3D grid with steps equal to 1 A == 100 pm
+			vector < vector < vector < double > > > aux_vec3;  
 			int num_of_div_x=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
 			int num_of_div_y=PRM.SIM_DOMAIN_WIDTH_Y/double(100.00);
 			int num_of_div_z=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);	
@@ -963,25 +996,6 @@ void Statistics::reset_statistics(){
 				}
 				concs_3D.push_back(aux_vec3);
 				aux_vec3.clear();
-			}
-		}
-		else{
-			int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
-			int num_of_div_on_r_stat=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
-			for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
-				aux_vec2.clear();
-				if(PRM.ions_to_simulate.at(is)){
-					for(int iz=0; iz<num_of_div_on_z_stat; iz++){
-						aux_vec1.clear();
-						for(int ir=0; ir<num_of_div_on_r_stat; ir++){
-							aux_vec1.push_back(double_zero);	
-						}
-						aux_vec2.push_back(aux_vec1);
-						aux_vec1.clear();
-					}
-				}
-				radial_concs.push_back(aux_vec2);
-				aux_vec2.clear();
 			}
 		}
 	}
@@ -1275,27 +1289,9 @@ void Statistics::reset_statistics(){
 		fout66.close();
 	}
 
-	if(PRM.concentrations!=0){
+	if(PRM.concentrations != 0){
 		createFile(stat_file_7);
 		createFile(gnuplot_file_7);
-	}
-
-	if(PRM.potential == 1){
-		createFile(stat_file_C);
-		createFile(gnuplot_file_C);
-		char *tfnCC = new char[gnuplot_file_C.length()+1];
-		strcpy(tfnCC, gnuplot_file_C.c_str());
-		ofstream foutCC(tfnCC, ios::app);
-		foutCC << "set encoding iso_8859_1" << endl;
-		foutCC << "set term wxt 1"<<endl;
-		foutCC << "set title 'AVERAGE POTENTIAL ALONG AXIS'" <<endl;
-		foutCC << "set xlabel 'z [\305]'" <<endl;
-		foutCC << "set ylabel 'Electric potential [mV]'" <<endl;
-		foutCC << "set grid"<<endl;
-		foutCC << "set xtics 10"<<endl;
-		foutCC << "plot '" << stat_file_C << "' u 1:2 w l t 'potential'"<<endl;
-		foutCC <<"pause -1" <<endl;
-		foutCC.close();
 	}
 
 	if(PRM.currents_ZT){
@@ -1398,8 +1394,7 @@ void Statistics::update_statistics(){
 			}
 		}
 	}
-
-// mean square displacement computation	
+	// mean square displacement computation	
 	if(PRM.mean_square_displ){
 		for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
 			double start_x=1e12*msds_start.at(i).x;
@@ -1415,10 +1410,50 @@ void Statistics::update_statistics(){
 		}
 		msds_index_2++;
 	}	
-	
-// concentrations computation	
-	if(PRM.concentrations!=0){	
-		if(PRM.concentrations==3){ // average on y	
+	// potential computation	
+	if (PRM.potential > 0) {	
+		double left_limit=(PRM.LEFT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
+		double right_limit=(PRM.RIGHT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
+		int num_of_div_on_z_stat=(right_limit - left_limit)/double(100.00);
+		int n_skip = 0;
+		for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+			if(isnormal(potentials_on_axis.at(INDEX_STAT_STEP).at(iz))){ // isnormal == True if real number (not NaN of Inf) and different from zero
+				average_potentials_on_axis.at(iz) += potentials_on_axis.at(INDEX_STAT_STEP).at(iz);
+			}
+			else {
+				n_skip += 1;
+				cerr << "DEBUG> n_skip = " << n_skip << endl; 
+			}
+		}
+		//cout << "DEBUG> INDEX_STAT_STEP = " << INDEX_STAT_STEP << " STEPS[INDEX_STAT_STEP] = " << STEPS[INDEX_STAT_STEP] << endl;
+		if (PRM.potential == 2) { // rotational symmetry
+			int num_of_div_on_r_stat=0.5*PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
+			for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+				for(int ir=0; ir<num_of_div_on_r_stat; ir++){
+					if(isnormal(radial_potentials.at(INDEX_STAT_STEP).at(iz).at(ir))){ // isnormal == True if real number (not NaN of Inf) and different from zero
+						average_radial_potentials.at(iz).at(ir) += radial_potentials.at(INDEX_STAT_STEP).at(iz).at(ir);
+					}
+				}
+			}
+		}
+	}	
+	// concentrations computation	
+	if (PRM.concentrations != 0) {	
+		if (PRM.concentrations == 2) { // rotational symmetry	
+			int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
+			int num_of_div_on_r_stat=0.5*PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
+			for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
+				double dx=(1e12*IONS[INDEX_STAT_STEP][i].x);
+				double dy=(1e12*IONS[INDEX_STAT_STEP][i].y);
+				double dist=sqrt(dx*dx+dy*dy);
+				int ir=(dist)/double(100.00);
+				int iz=(1e12*IONS[INDEX_STAT_STEP][i].z-PRM.MIN_Z)/double(100.00);
+				if((iz>=0 && iz<num_of_div_on_z_stat) && (ir>=0 && ir<num_of_div_on_r_stat)){
+					radial_concs.at(IONS[INDEX_STAT_STEP][i].kind).at(iz).at(ir)+=1.00;
+				}
+			}
+		}
+		else if (PRM.concentrations == 3) { // # 3D data
 			int num_of_div_x=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
 			int num_of_div_y=PRM.SIM_DOMAIN_WIDTH_Y/double(100.00);
 			int num_of_div_z=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
@@ -1431,37 +1466,11 @@ void Statistics::update_statistics(){
 				}
 			}	
 		}
-		else{ // rotational symmetry
-			int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
-			int num_of_div_on_r_stat=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
-			for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_STAT_STEP]; i++){
-				double dx=(1e12*IONS[INDEX_STAT_STEP][i].x);
-				double dy=(1e12*IONS[INDEX_STAT_STEP][i].y);
-				double dist=sqrt(dx*dx+dy*dy);
-				int ir=(dist)/double(100.00);
-				int iz=(1e12*IONS[INDEX_STAT_STEP][i].z-PRM.MIN_Z)/double(100.00);
-				if((iz>=0 && iz<num_of_div_on_z_stat) && (ir>=0 && ir<num_of_div_on_r_stat)){
-					radial_concs.at(IONS[INDEX_STAT_STEP][i].kind).at(iz).at(ir)+=1.00;
-				}
-			}
-		}
 	}
-	
-	
-// potential computation	
-	if(PRM.potential == 1){	
-		for(int i=0; i<2001; i++){
-			if(isnormal(POTENTIALS_ON_AXIS[INDEX_STAT_STEP][i]) || POTENTIALS_ON_AXIS[INDEX_STAT_STEP][i]==0){
-				AVERAGE_POTENTIALS_ON_AXIS[i]+=(POTENTIALS_ON_AXIS[INDEX_STAT_STEP][i]-POTENTIALS_ON_AXIS[INDEX_STAT_STEP][2000]);
-			}
-		}
-	}	
-	
-// currents computation	(ZERO THRESHOLD, one threshold at z=0)
+	// currents computation	(ZERO THRESHOLD, one threshold at z=0)
 	if(PRM.currents_ZT){	
 		compute_currents_ZT();
 	}
-	
 	if(PRM.channel_configuration){
 		int counter_Na=0;	// 3
 		int counter_K=0;	// 4
@@ -1728,16 +1737,13 @@ void Statistics::compute_currents_ZT(){
 }
 
 void Statistics::print_statistics(){
-	
-	//~ double time_computed=double(step_window.at(0))*PRM.DELTA_T;
 	double time_computed=double(STEPS[INDEX_STAT_STEP])*PRM.DELTA_T;
-	
-// ions position
+	// ions position
 	if(PRM.channel_pdb_files){
 		string trajectory_file=PRM.PREFIX + ".pdb";
 		char *tfn1 = new char[trajectory_file.length()+1];
 		strcpy(tfn1, trajectory_file.c_str());
-		ofstream fout(tfn1, ios::out);
+		ofstream fout(tfn1, ios::app);
 		for(int i=0; i<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; i++){
 			fout<<"ATOM  "<<setw(5)<<i+1<<" "
 				<<setw(4)<<IONS[INDEX_LAST_STEP][i].name<<" "
@@ -1752,8 +1758,7 @@ void Statistics::print_statistics(){
 		}
 		fout.close();
 	}
-	
-// flux
+	// flux
 	if(PRM.flux){
 		createFile(stat_file_2);
 		char *tfn2 = new char[stat_file_2.length()+1];
@@ -1793,9 +1798,7 @@ void Statistics::print_statistics(){
 		}
 		fout.close();
 	}
-
-	
-// radial distribution function computation	
+	// radial distribution function computation	
 	if(PRM.rdf){
 		createFile(stat_file_3);
 		char *tfn3 = new char[stat_file_3.length()+1];
@@ -1839,8 +1842,7 @@ void Statistics::print_statistics(){
 		
 		fout3.close();
 	}				
-
-// velocity distribution computation	
+	// velocity distribution computation	
 	if(PRM.vel_distribution){
 		
 		createFile(stat_file_4);
@@ -1861,9 +1863,7 @@ void Statistics::print_statistics(){
 		
 		fout4.close();
 	}
-	
-
-// mean square displacement computation	
+	// mean square displacement computation	
 	if(PRM.mean_square_displ){
 		if(step_window.at(0)<=0){
 			if(step_window.at(0)==0){
@@ -1917,9 +1917,7 @@ void Statistics::print_statistics(){
 		msds_index_1++;
 		msds_index_2=1;
 	}	
-
-	
-	
+	// induced charges
 	if(PRM.induced_charge){
 		char *tfn6 = new char[stat_file_6.length()+1];
 		strcpy(tfn6, stat_file_6.c_str());     
@@ -1932,47 +1930,95 @@ void Statistics::print_statistics(){
 		C_total_charge.clear();
 		C_total_charge_type.clear();
 	}
-
-// potential computation	
-	if(PRM.potential == 1){	
+	// potential
+	if (PRM.potential > 0) {
+		double left_limit=(PRM.LEFT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
+		double right_limit=(PRM.RIGHT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
+		int num_of_div_on_z_stat=(right_limit - left_limit)/double(100.00);
 		createFile(stat_file_C);
 		char *tfnC = new char[stat_file_C.length()+1];
 		strcpy(tfnC, stat_file_C.c_str());     
 		ofstream foutC(tfnC, ios::app);
-		for(int i=0; i<2001; i++){
+		for(int iz=0; iz<num_of_div_on_z_stat; iz++){
 			// convert from microVolts for accumulation in computing the average
-			foutC << 1e10*POINTS_ON_AXIS[i] << "\t" << 1e9*AVERAGE_POTENTIALS_ON_AXIS[i]/double(STEPS[INDEX_STAT_STEP]+1) << endl;
+			foutC 	<< ((left_limit)+double(50.0)+double(iz)*double(100.00))/double(100.00) << "\t"
+				<< 1e9*(average_potentials_on_axis.at(iz)-average_potentials_on_axis.at(num_of_div_on_z_stat-1))/double(STEPS[INDEX_STAT_STEP]+1) << endl;
+		}
+		foutC << endl << endl;
+		if (PRM.potential == 2) { // rotational simmetry
+			int num_of_div_on_r_stat=0.5*PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
+			for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+				for(int ir=0; ir<num_of_div_on_r_stat; ir++){
+					foutC 	<< ((left_limit)+double(50.0)+double(iz)*double(100.00))/double(100.00) << " "
+						<< (double(50.0)+double(ir)*double(100.00))/double(100.00) << " "
+						<< 1e9*(average_radial_potentials.at(iz).at(ir)-average_radial_potentials.at(num_of_div_on_z_stat-1).at(0))/double(STEPS[INDEX_STAT_STEP]+1) << endl;
+				}
+				foutC << endl;
+			}
 		}
 		foutC.close();
 	}
-	
-// concentrations computation	
-	if(PRM.concentrations!=0){	
+	// concentrations
+	if (PRM.concentrations != 0) {	
 		createFile(stat_file_7);
 		char *tfn7 = new char[stat_file_7.length()+1];
 		strcpy(tfn7, stat_file_7.c_str());     
 		ofstream fout7(tfn7, ios::app);
-			
-		if(PRM.concentrations==3){ //average on y (?)
+		if (PRM.concentrations == 2) { // rotational simmetry
+			fout7 << "# col 0: z [A]" << endl;
+			fout7 << "# col 1: r [A]" << endl;
+			int ind_col = 2;
+			for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
+				if(PRM.ions_to_simulate.at(is)){
+					Ion ion_curr(is);
+					fout7 << "# col "<<ind_col<<": " << ion_curr.name << " [M]" << endl;
+					ind_col += 1;
+				}
+			}
+			int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
+			int num_of_div_on_r_stat=0.5*PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
+			for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+				for(int ir=0; ir<num_of_div_on_r_stat; ir++){
+					double max_rad=double(ir+1)*double(100.00); // radius of the external side of the ring
+					double max_vol=M_PI*max_rad*max_rad; // volume of the corresponding cylinder section / 100 (dz = 1A = 100 pm)
+					double min_rad=double(ir)*double(100.00); // radius of the internal side of the ring
+					double min_vol=M_PI*min_rad*min_rad; // volume of the corresponding cylinder section (dz = 1A = 100 pm)
+					double cell_volume_for_M=1e-33*AVOGADRO*double(100.00)*(max_vol-min_vol); // conversion factor from #ions/section --> Molar
+					vector <double> this_concs;
+					for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
+						this_concs.push_back(0.00);
+					}
+					for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
+						if(PRM.ions_to_simulate.at(is)){
+							this_concs.at(is)=radial_concs.at(is).at(iz).at(ir)/(cell_volume_for_M*double(STEPS[INDEX_STAT_STEP]+1));
+						}
+					}
+					fout7 	<< ((PRM.MIN_Z)+double(50.0)+double(iz)*double(100.00))/double(100.00) << " "
+						<< (double(50.0)+double(ir)*double(100.00))/double(100.00) << " ";
+					for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
+						if(PRM.ions_to_simulate.at(is)){
+							fout7 	<< this_concs.at(is) << " ";
+						}
+					}
+					fout7 << endl;
+					this_concs.clear();
+				}
+				fout7<<endl;
+			}
+		} else if (PRM.concentrations == 3) { // 3D data
 			int num_of_div_x=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
 			int num_of_div_y=PRM.SIM_DOMAIN_WIDTH_Y/double(100.00);
 			int num_of_div_z=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
-			
 			double cell_volume_for_M=1e-33*AVOGADRO*double(100.00)*double(100.00)*double(100.00);
-			
 			for(int iz=0; iz<num_of_div_z; iz++){
-			
 				for(int ix=0; ix<num_of_div_x; ix++){
-					
 					for(int iy=0; iy<num_of_div_y; iy++){
-					
 						fout7 	<< ((PRM.MIN_Z)+double(50.0)+double(iz)*double(100.00))/double(100.00) << " "
 						<< ((PRM.MIN_X)+double(50.0)+double(ix)*double(100.00))/double(100.00) << " "
 						<< ((PRM.MIN_Y)+double(50.0)+double(iy)*double(100.00))/double(100.00) << " ";
-						
 						for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
 							if(PRM.ions_to_simulate.at(is)){
-								fout7 	<< concs_3D.at(is).at(ix).at(iy).at(iz)/(cell_volume_for_M*double(step_window.at(0))) << " ";
+								fout7 	<< concs_3D.at(is).at(ix).at(iy).at(iz)/(cell_volume_for_M*double(STEPS[INDEX_STAT_STEP]+1)) << " ";
 							}
 						}
 						fout7 << endl;
@@ -1980,46 +2026,6 @@ void Statistics::print_statistics(){
 					fout7<<endl;
 				}
 				fout7<<endl<<endl<<endl;
-			}
-		} else{ // rotational
-			int num_of_div_on_z_stat=PRM.SIM_DOMAIN_WIDTH_Z/double(100.00);
-			int num_of_div_on_r_stat=PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
-			
-			for(int iz=0; iz<num_of_div_on_z_stat; iz++){
-			
-				for(int ir=0; ir<num_of_div_on_r_stat; ir++){
-					double max_rad=double(ir+1)*double(100.00);
-					double max_vol=M_PI*max_rad*max_rad;
-					double min_rad=double(ir)*double(100.00);
-					double min_vol=M_PI*min_rad*min_rad;
-					double cell_volume_for_M=1e-33*AVOGADRO*double(100.00)*(max_vol-min_vol);
-					
-					vector <double> this_concs;
-					for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
-						this_concs.push_back(0.00);
-					}
-					
-					for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
-						if(PRM.ions_to_simulate.at(is)){
-							this_concs.at(is)=radial_concs.at(is).at(iz).at(ir)/(cell_volume_for_M*double(step_window.at(0)));
-						}
-					}
-					
-					fout7 	<< ((PRM.MIN_Z)+double(50.0)+double(iz)*double(100.00))/double(100.00) << " "
-						<< (double(50.0)+double(ir)*double(100.00))/double(100.00) << " ";
-					
-					for(int is=0; is<NUM_OF_IONIC_SPECIES; is++){
-						if(PRM.ions_to_simulate.at(is)){
-							fout7 	<< this_concs.at(is) << " ";
-						}
-					}
-					
-					
-					fout7 << endl;
-					this_concs.clear();
-				}
-				
-				fout7<<endl;
 			}
 		}
 		fout7.close();
@@ -2143,12 +2149,25 @@ void Statistics::print_statistics(){
 }
 
 void Statistics::reset_after_restarting_from_the_beginning(){
-	
-	if(PRM.potential == 1){	
-		for(int i=0; i<50; i++){
-			for(int j=0; j<2001; j++){
-				POTENTIALS_ON_AXIS[i][j]=0.00;
-				AVERAGE_POTENTIALS_ON_AXIS[j]=0.00;
+	if(PRM.potential > 0){	
+		double left_limit=(PRM.LEFT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
+		double right_limit=(PRM.RIGHT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
+		int num_of_div_on_z_stat=(right_limit - left_limit)/double(100.00);
+		for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+			average_potentials_on_axis.at(iz) = 0.00;
+			for(int i=0; i<50; i++){
+				potentials_on_axis.at(i).at(iz) = 0.00;
+			}
+		}
+		if(PRM.potential == 2){ // rotational simmetry
+			int num_of_div_on_r_stat=0.5*PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
+			for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+				for(int ir=0; ir<num_of_div_on_r_stat; ir++){
+					average_radial_potentials.at(iz).at(ir) = 0.00;
+					for(int i=0; i<50; i++){
+						radial_potentials.at(i).at(iz).at(ir) = 0.00;
+					}
+				}
 			}
 		}
 	}
@@ -2165,8 +2184,6 @@ void Statistics::reset_after_restarting_from_the_beginning(){
 			instant_currents_ZT.at(is)=0.00;
 		}
 	}
-	
-	
 	if(PRM.channel_configuration){
 		for(int a=0; a<5; a++){
 			for(int b=0; b<5; b++){
@@ -2180,7 +2197,6 @@ void Statistics::reset_after_restarting_from_the_beginning(){
 			}
 		}
 	}
-	
 	if(PRM.filter_configuration){
 		for(int a=0; a<5; a++){
 			for(int b=0; b<5; b++){
@@ -2194,24 +2210,19 @@ void Statistics::reset_after_restarting_from_the_beginning(){
 			}
 		}
 	}
-	
 	return;
 }
 
 ostream& operator<<(ostream& stream, Statistics& STAT){
-	
 	stream << endl << "########################################" <<endl;
 	stream << "Statistics" <<endl;
-	
 	return stream;
 }
 
 Control_cell::Control_cell(){
-	
 }
 
 Control_cell::~Control_cell(){
-	
 }
 
 void Control_cell::reset_control_cell(){

@@ -66,9 +66,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@
 @@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@@*/
-
-
-
  
 #include "constants.h"
 #include "utils.h"
@@ -80,74 +77,50 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 #include "sim_structures.h"
 #include "ions_properties.h"
 
-
 void create_simulation_domain(){
 	PRM.MAX_VEL=1.5e4;	// 2e3
 	PRM.MAX_FLIGHT=PRM.MAX_VEL*PRM.DELTA_T;
-	
 	if(PRM.SEED!=0){
 		srand(PRM.SEED);
 	}
 	else{
 		srand (time(NULL));
 	}
-
 	PRM.MIN_X=-double(0.5)*PRM.SIM_DOMAIN_WIDTH_X;
 	PRM.MAX_X=double(0.5)*PRM.SIM_DOMAIN_WIDTH_X;	
 	PRM.MIN_Y=-double(0.5)*PRM.SIM_DOMAIN_WIDTH_Y;
 	PRM.MAX_Y=double(0.5)*PRM.SIM_DOMAIN_WIDTH_Y;	
-	
 	if(PRM.SIM_TYPE.compare("BULK")==0){
 		PRM.SIM_DOMAIN_WIDTH_Z=double(2.00)*PRM.CONTROL_CELL_WIDTH+double(2.00)*PRM.OUTER_REGION_WIDTH+double(2.00)*PRM.BATH_WIDTH;
 	}
 	else{
 		PRM.SIM_DOMAIN_WIDTH_Z=double(2.00)*PRM.CONTROL_CELL_WIDTH+double(2.00)*PRM.OUTER_REGION_WIDTH+double(2.00)*PRM.BATH_WIDTH+PRM.MEMBRANE_WIDTH;
 	}
-	
 	PRM.MIN_Z=-double(0.5)*PRM.SIM_DOMAIN_WIDTH_Z;
 	PRM.MAX_Z=double(0.5)*PRM.SIM_DOMAIN_WIDTH_Z;
-	
 	//volumes are in liters
 	PRM.SIM_DOMAIN_VOLUME=PRM.SIM_DOMAIN_WIDTH_X*PRM.SIM_DOMAIN_WIDTH_Y*PRM.SIM_DOMAIN_WIDTH_Z;
 	PRM.SIM_DOMAIN_VOLUME=1.e-33*PRM.SIM_DOMAIN_VOLUME;
-	
 	PRM.LEFT_CELL_MIN_Z=PRM.MIN_Z+PRM.OUTER_REGION_WIDTH;
 	PRM.LEFT_CELL_MAX_Z=PRM.LEFT_CELL_MIN_Z+PRM.CONTROL_CELL_WIDTH;
 	PRM.RIGHT_CELL_MAX_Z=PRM.MAX_Z-PRM.OUTER_REGION_WIDTH;
 	PRM.RIGHT_CELL_MIN_Z=PRM.RIGHT_CELL_MAX_Z-PRM.CONTROL_CELL_WIDTH;	
-	
 	PRM.CONTROL_CELL_VOLUME=PRM.SIM_DOMAIN_WIDTH_X*PRM.SIM_DOMAIN_WIDTH_Y*PRM.CONTROL_CELL_WIDTH;
 	PRM.CONTROL_CELL_VOLUME=1e-33*PRM.CONTROL_CELL_VOLUME;
-	
 	//potential is in V and electric field is in V/m
-	PRM.APPLIED_FIELD=PRM.APPLIED_POTENTIAL/PRM.SIM_DOMAIN_WIDTH_Z;
-	PRM.APPLIED_FIELD=1e12*PRM.APPLIED_FIELD;
-	
-	cout << "PRM.APPLIED_POTENTIAL: " << PRM.APPLIED_POTENTIAL <<endl;
-	cout << "PRM.APPLIED_FIELD: " << PRM.APPLIED_FIELD <<endl;
-	
 	/*================================================================================
 	the applied potential and the applied field are rescaled in order to have the 
 	desired potential drop in the transport region. 
+	SIMONE: non mi convince
 	================================================================================*/
-	double potential_drop_region_width=PRM.SIM_DOMAIN_WIDTH_Z-double(2.00)*PRM.OUTER_REGION_WIDTH+PRM.CONTROL_CELL_WIDTH;
-	PRM.APPLIED_POTENTIAL=PRM.APPLIED_POTENTIAL*PRM.SIM_DOMAIN_WIDTH_Z/potential_drop_region_width;
-	
+	//double potential_drop_region_width=PRM.SIM_DOMAIN_WIDTH_Z-double(2.00)*PRM.OUTER_REGION_WIDTH+PRM.CONTROL_CELL_WIDTH;
+	//PRM.APPLIED_POTENTIAL=PRM.APPLIED_POTENTIAL*PRM.SIM_DOMAIN_WIDTH_Z/potential_drop_region_width;
+
 	PRM.APPLIED_FIELD=1e12*PRM.APPLIED_POTENTIAL/PRM.SIM_DOMAIN_WIDTH_Z;
-	
-	cout << "Applied potential and electric field automatically rescaled."<<endl;
-	cout << "PRM.APPLIED_POTENTIAL: " << PRM.APPLIED_POTENTIAL <<endl;
-	cout << "PRM.APPLIED_FIELD: " << PRM.APPLIED_FIELD <<endl;
-
-
-	
-	
 	PRM.delta_epsilon=PRM.EPS_MEM-PRM.EPS_W;
 	PRM.mean_epsilon=(PRM.EPS_MEM+PRM.EPS_W)/double(2.00);		
 	double den_for_K=double(4.00)*M_PI*PRM.mean_epsilon;
 	PRM.dielectrics_weight=-PRM.delta_epsilon/den_for_K;
-	
-	
 //=============================================
 // create ions in the left cell					
 															/*
@@ -542,12 +515,9 @@ void create_simulation_domain(){
 }
 
 bool initialize_ion_boxes(){
-
 	vector <Ion> aux_ions;
-	
 	bool CORRECT=true;
 	int run=0;
-	
 	for(int ib=0; ib<ion_boxes.size(); ib++){
 		ion_boxes.at(ib).ion_indexes.clear();
 		for(int iv=0; iv<ion_boxes.at(ib).is.size(); iv++){

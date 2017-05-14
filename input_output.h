@@ -115,6 +115,4 @@ void output_vmd_sim_domain(ostream& stream);
 
 void print_conf_file(ostream& stream);
 
-void initialize_output_potential();
-
 #endif

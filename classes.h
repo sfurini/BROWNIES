@@ -97,7 +97,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 
 using namespace std;
 
-
 //########################################
 // Class Point
 //########################################
@@ -608,13 +607,10 @@ class Tile{
 //########################################
 class Statistics{
 	public:
-		
 	//~ int step;
 	int MAX_STEPS;
-	
 	int num_of_dz;
 	double DELTA_Z;
-	
 	vector <int> ions_this_step;
 	
 // flux computation	
@@ -636,8 +632,6 @@ class Statistics{
 	vector < double > msds_num;	
 	vector <Point> msds_start;	
 	
-
-	
 // induced charge computation
 	double A_total_charge;
 	vector <double> C_total_charge;
@@ -648,9 +642,10 @@ class Statistics{
 	vector < vector < vector <  double > > > radial_concs;
 			
 // potential computation
-	vector < vector < vector < vector < double > > > > potentials_3D;
-	vector < vector < vector <  double > > > radial_potentials;
+	vector < double > average_potentials_on_axis;
 	vector < vector < double > > potentials_on_axis;
+	vector < vector < double > > average_radial_potentials;
+	vector < vector < vector <  double > > > radial_potentials;
 	
 // currents computation	(RAMO-SCHOCKLEY THEOREM)	
 	vector <double> currents_RS;	

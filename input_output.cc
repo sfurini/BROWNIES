@@ -1265,13 +1265,11 @@ void check_parameters(){
 		cout << "WRONG PARAMETER! SHORT_RANGE_EXP must be >=0 (12 default for L-J)." <<endl;
 		exit(5);
 	}
-	//if(!(PRM.potential==0 || PRM.potential==1 || PRM.potential==2 || PRM.potential==3)){
-	if(!(PRM.potential==0 || PRM.potential==1)){
+	if(!(PRM.potential==0 || PRM.potential==1 || PRM.potential==2)){
 		cout << "WRONG PARAMETER! STATISTICS - potential must be chosen in:" <<endl;
 		cout << "\t0 - no potential statistics collected"<<endl;
 		cout << "\t1 - 1-D potential statistics collected along channel axis"<<endl;
-		//cout << "\t2 - 2-D potential statistics collected (rotational symmetry)"<<endl;
-		//cout << "\t3 - 3-D potential statistics collected"<<endl;
+		cout << "\t2 - (1) + 2-D potential statistics collected (rotational symmetry)"<<endl;
 		exit(5);
 	}
 	if(!(PRM.concentrations==0 || PRM.concentrations==2 || PRM.concentrations==3)){
@@ -1537,12 +1535,10 @@ void print_PDB_file(vector <Ion>& ions){
 }
 
 void print_PDB_file_debug(vector <Ion>& ions, int index){
-	
 	string s;
 	stringstream ss;
 	ss << index;
 	ss >> s;
-	
 	
 	string ions_file=PRM.PREFIX+"."+s+".pdb";
 	char *tfn = new char[ions_file.length()+1];
@@ -3253,36 +3249,5 @@ void print_conf_file(ostream& stream){
 	
 	fout.close();
 	
-	return;
-}
-
-void initialize_output_potential(){
-	double left_limit=1e-12*(PRM.LEFT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
-	double right_limit=1e-12*(PRM.RIGHT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
-	//cerr << "DEBUG MIN_Z = " << PRM.MIN_Z << endl;
-	//cerr << "DEBUG MAX_Z = " << PRM.MAX_Z << endl;
-	//cerr << "DEBUG LEFT_CELL_MIN_Z = " << PRM.LEFT_CELL_MIN_Z << endl;
-	//cerr << "DEBUG OUTER_REGION_WIDTH = " << PRM.OUTER_REGION_WIDTH << endl;
-	//cerr << "DEBUG left_limit = " << left_limit << endl;
-	if(PRM.potential == 1){
-		double exponent=1.50;
-		int index=0;
-		for(int i=1000;i>=0; i--){
-			POINTS_ON_AXIS[index]=left_limit*pow(double(i),exponent)/pow(double(1000),exponent);
-			index++;
-		}
-		for(int i=1;i<=1000; i++){
-			POINTS_ON_AXIS[index]=right_limit*pow(double(i),exponent)/pow(double(1000),exponent);
-			index++;
-		}
-		for(int i=0; i<50; i++){
-			for(int j=0; j<2001; j++){
-				POTENTIALS_ON_AXIS[i][j]=0.00;
-			}
-		}
-		for(int j=0; j<2001; j++){
-			AVERAGE_POTENTIALS_ON_AXIS[j]=0.00;
-		}
-	}
 	return;
 }

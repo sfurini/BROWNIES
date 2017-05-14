@@ -193,10 +193,6 @@ int indexesGap;
 int* test_arrayInt;
 int* test_arrayArrayInt;
 
-double POINTS_ON_AXIS[2001];
-double POTENTIALS_ON_AXIS[50][2001];
-double AVERAGE_POTENTIALS_ON_AXIS[2001];
-
 double CHANNEL_CONFIGURATIONS[3][3][3][3][3];
 double FILTER_CONFIGURATIONS[3][3][3][3][3];
 

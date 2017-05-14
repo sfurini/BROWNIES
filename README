@@ -8,8 +8,13 @@ Format input.conf
 potential:
 	0 - no potential statistics collected
 	1 - 1-D potential statistics collected along channel axis
-	# NOT IMPLEMENTED 2 - 2-D potential statistics collected (rotational symmetry)
+	2 - 2-D potential statistics collected (rotational symmetry) --> STILL NEED TO IMPLEMENT IT
 	# NOT IMPLEMENTED 3 - 3-D potential statistics collected
+
+concentration:
+	0 - no concentrations statistics collected
+	2 - 2-D concentrations statistics collected (rotational symmetry)
+	3 - 3-D concentrations statistics collected
 
 channel_pdb_files:
 	1 - set of snapshots of the ions
@@ -62,11 +67,19 @@ SIM_DOMAIN_WIDTH_[X/Y] = [A] Width of the simulation box along x/y;
 	The simulation box goes from: -0.5*SIMULATION_DOMAIN_WIDTH_[X/Y]
 				  to: +0.5*SIMULATION_DOMAIN_WIDTH_[X/Y]
 [LEFT/RIGHT]_VESTIBULE_CURVATURE_RADIUS = [A] Parameter R_[L/R] in channel_examples.pdf
+
 CHANNEL_PROFILE_POINT = z [A] = radius [A] See panel d in channel_examples.pdf
-CHARGE_PROFILE_POINT = z [A] = radius [A] = n [# charges] = q [e charge value] See panel e-f in channel_examples.pdf
+	z = 0 is the center of MEMBRANE_WIDTH
+CHARGE_RING = z [A] = radius [A] = n [# charges] = q [e charge value] See panel e-f in channel_examples.pdf
+	q = value of each charge
 
 Another strategy to define fixed charges is to use an input file (FIXED_CHARGES_FILE)
 
+TILES_PER_RING = Number of elements in the angular direction for the MEMBRANE_WIDTH region
+	It needs to be an even number
+NUM_OF_DIV = Number of elements in the axial direction for each segment
+	where a segment is a region that goes from one value of the radius to another one
+	for example a region between two consecutive CHANNEL_PROFILE_POINT
 
 
 -0.5*SIM_DOMAIN_WIDTH_X/Y				  +0.5*SIM_DOMAIN_WIDTH_X/Y
@@ -106,4 +119,5 @@ Another strategy to define fixed charges is to use an input file (FIXED_CHARGES_
 		|                                                    | OUTER_REGION_WIDTH
 		|                                                    |
 		------------------------------------------------------
+
 

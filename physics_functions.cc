@@ -76,8 +76,6 @@ along with this program.  If not, see <http://www.gnu.org/licenses/>
 #include "classes.h"
 #include "sim_structures.h"
 
-
-
 bool verifyDistance(double ax, double ay, double az, double ar, double bx, double by, double bz, double br){
 	double d_m=ar+br;
 	double d=sqrt((ax-bx)*(ax-bx)+(ay-by)*(ay-by)+(az-bz)*(az-bz));
@@ -285,14 +283,11 @@ void compute_force_on_ions(){
 					
 					if(secondIndex>=0 && secondIndex<SR_dielectric_boundary.at(IONS[INDEX_LAST_STEP][ion_index_1].kind).at(firstIndex).size()){
 						IONS[INDEX_LAST_STEP][ion_index_1].force[2]+=SR_dielectric_boundary.at(IONS[INDEX_LAST_STEP][ion_index_1].kind).at(firstIndex).at(secondIndex).at(2);
-						
 						if(fabs(dista)>1e-8){
 							double angle = atan2(dy,dx);
 							double p0 = SR_dielectric_boundary.at(IONS[INDEX_LAST_STEP][ion_index_1].kind).at(firstIndex).at(secondIndex).at(0);
-							
 							double n0 = p0*cos(angle);
 							double n1 = p0*sin(angle);
-							
 							IONS[INDEX_LAST_STEP][ion_index_1].force[0]+=n0;
 							IONS[INDEX_LAST_STEP][ion_index_1].force[1]+=n1;
 						}
@@ -373,18 +368,15 @@ void compute_force_on_ions(){
 	// ion-ion interaction
 	for(int ion_index_1=0; ion_index_1<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]-1; ion_index_1++){
 		for(int ion_index_2=ion_index_1+1; ion_index_2<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; ion_index_2++){
-			
 			//--------------------------------------------------------------------------------------------------
 			// simone questa controllamela bene. l'unica volta che due ioni NON si sentono Coulombianamente e' solo quando sono entrambi nella mappa MD, giusto?
 			// quindi se ce n'e' almeno uno fuori dalla mappa la forza la sentono tutti e due
 			if(1e12*IONS[INDEX_LAST_STEP][ion_index_1].z<PRM.MD_MAP_MIN_Z || 1e12*IONS[INDEX_LAST_STEP][ion_index_1].z>PRM.MD_MAP_MAX_Z || 1e12*IONS[INDEX_LAST_STEP][ion_index_2].z<PRM.MD_MAP_MIN_Z || 1e12*IONS[INDEX_LAST_STEP][ion_index_2].z>PRM.MD_MAP_MAX_Z){
-			
 				double ion2_x=IONS[INDEX_LAST_STEP][ion_index_2].x;
 				double ion2_y=IONS[INDEX_LAST_STEP][ion_index_2].y;
 				double ion2_z=IONS[INDEX_LAST_STEP][ion_index_2].z;			
 				apply_periodic_boundary(IONS[INDEX_LAST_STEP][ion_index_1].x, IONS[INDEX_LAST_STEP][ion_index_1].y, IONS[INDEX_LAST_STEP][ion_index_1].z, ion2_x, ion2_y, ion2_z);
 				double distance=1e12*get_distance(IONS[INDEX_LAST_STEP][ion_index_1].x, IONS[INDEX_LAST_STEP][ion_index_1].y, IONS[INDEX_LAST_STEP][ion_index_1].z, ion2_x, ion2_y, ion2_z);			
-				
 				if(distance<20000){
 					double force_C=0.00;
 					double force_SR=0.00;
@@ -392,54 +384,45 @@ void compute_force_on_ions(){
 					double dx=0.00;
 					double dy=0.00;
 					double dz=0.00;
-					
 					dx=1e12*(IONS[INDEX_LAST_STEP][ion_index_1].x-ion2_x)/distance;
 					dy=1e12*(IONS[INDEX_LAST_STEP][ion_index_1].y-ion2_y)/distance;
 					dz=1e12*(IONS[INDEX_LAST_STEP][ion_index_1].z-ion2_z)/distance;
-					
 					force_C=IONS[INDEX_LAST_STEP][ion_index_1].valence*IONS[INDEX_LAST_STEP][ion_index_2].DW_valence*FORCE_C[int(distance)];
-					
 					if(distance<4000){
 						force_SR=FORCE_SR.at(IONS[INDEX_LAST_STEP][ion_index_1].kind).at(IONS[INDEX_LAST_STEP][ion_index_2].kind).at(int(distance));
 						force_O=FORCE_OTHER.at(IONS[INDEX_LAST_STEP][ion_index_1].kind).at(IONS[INDEX_LAST_STEP][ion_index_2].kind).at(int(distance));
 					}
-					
 					IONS[INDEX_LAST_STEP][ion_index_1].force[0]+=(force_C+force_SR+force_O)*dx;
 					IONS[INDEX_LAST_STEP][ion_index_1].force[1]+=(force_C+force_SR+force_O)*dy;
 					IONS[INDEX_LAST_STEP][ion_index_1].force[2]+=(force_C+force_SR+force_O)*dz;
-					
 					IONS[INDEX_LAST_STEP][ion_index_2].force[0]-=(force_C+force_SR+force_O)*dx;
 					IONS[INDEX_LAST_STEP][ion_index_2].force[1]-=(force_C+force_SR+force_O)*dy;
 					IONS[INDEX_LAST_STEP][ion_index_2].force[2]-=(force_C+force_SR+force_O)*dz;
 				}	
-				else{
-					// cut-off
-				}	
-			}					
+			}
 		}
-		
 	}
-	
-	//compute the potential along the axis
-	if(PRM.potential!=0){
-		if(STEPS[INDEX_LAST_STEP]>=0){
-			for(int i=0; i<2001; i++){
-				double ics=0;
-				double ipsilon=0;
-				double zeta=POINTS_ON_AXIS[i];
+	if (PRM.potential > 0) { //compute the potential along the axis
+		if(STEPS[INDEX_LAST_STEP] >= 0){
+			double left_limit=(PRM.LEFT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
+			double right_limit=(PRM.RIGHT_CELL_MIN_Z+0.5*PRM.CONTROL_CELL_WIDTH);
+			int num_of_div_on_z_stat=(right_limit - left_limit)/double(100.00);
+			double x_bin = 0.0;
+			double y_bin = 0.0;
+			for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+				double z_bin = (left_limit+double(50.0)+double(iz)*double(100.00)) * 1e-12; // [m]
 				//external field
-				POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i]=PRM.APPLIED_POTENTIAL*(PRM.MAX_Z-1e12*POINTS_ON_AXIS[i])/(PRM.SIM_DOMAIN_WIDTH_Z);
-				//cerr << "DEBUG " << STEPS[INDEX_LAST_STEP] << "\t" << i << "\t" << POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i] << endl;
+				STAT.potentials_on_axis.at(INDEX_LAST_STEP).at(iz) = PRM.APPLIED_POTENTIAL*(PRM.MAX_Z-1e12*z_bin)/(PRM.SIM_DOMAIN_WIDTH_Z);
 				//membrane charges
 				if(!membrane_charges.empty()){
 					for(int charge_index=0; charge_index<membrane_charges.size(); charge_index++){
 						double charge_x=membrane_charges.at(charge_index).x;
 						double charge_y=membrane_charges.at(charge_index).y;
 						double charge_z=membrane_charges.at(charge_index).z;				
-						apply_periodic_boundary(ics, ipsilon, zeta, charge_x, charge_y, charge_z);
-						double distance=1e12*get_distance(ics, ipsilon, zeta, charge_x, charge_y, charge_z);	
+						apply_periodic_boundary(x_bin, y_bin, z_bin, charge_x, charge_y, charge_z);
+						double distance=1e12*get_distance(x_bin, y_bin, z_bin, charge_x, charge_y, charge_z);	
 						if(distance<20000){
-							POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i]+=membrane_charges.at(charge_index).DW_valence*POTENTIAL_C[int(distance)];
+							STAT.potentials_on_axis.at(INDEX_LAST_STEP).at(iz) += membrane_charges.at(charge_index).DW_valence*POTENTIAL_C[int(distance)];
 						}	
 					}		
 				}
@@ -449,11 +432,11 @@ void compute_force_on_ions(){
 						double charge_x=SURFACES[surface_index].center_x;
 						double charge_y=SURFACES[surface_index].center_y;
 						double charge_z=SURFACES[surface_index].center_z;				
-						apply_periodic_boundary(ics, ipsilon, zeta, charge_x, charge_y, charge_z);
-						double distance=1e12*get_distance(ics, ipsilon, zeta, charge_x, charge_y, charge_z);
+						apply_periodic_boundary(x_bin, y_bin, z_bin, charge_x, charge_y, charge_z);
+						double distance=1e12*get_distance(x_bin, y_bin, z_bin, charge_x, charge_y, charge_z);
 						if(distance<20000){
 							double surf_charge_valence=(vector_h[surface_index]*surfaces.at(surface_index).area)/Q;
-							POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i]+=surf_charge_valence*POTENTIAL_C[int(distance)];
+							STAT.potentials_on_axis.at(INDEX_LAST_STEP).at(iz) += surf_charge_valence*POTENTIAL_C[int(distance)];
 						}	
 					}
 				}
@@ -462,15 +445,70 @@ void compute_force_on_ions(){
 					double ion_x=IONS[INDEX_LAST_STEP][ion_index].x;
 					double ion_y=IONS[INDEX_LAST_STEP][ion_index].y;
 					double ion_z=IONS[INDEX_LAST_STEP][ion_index].z;			
-					apply_periodic_boundary(ics, ipsilon, zeta, ion_x, ion_y, ion_z);
-					double distance=1e12*get_distance(ics, ipsilon, zeta, ion_x, ion_y, ion_z);			
+					apply_periodic_boundary(x_bin, y_bin, z_bin, ion_x, ion_y, ion_z);
+					double distance=1e12*get_distance(x_bin, y_bin, z_bin, ion_x, ion_y, ion_z);			
 					if(distance<20000){
-						POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i]+=IONS[INDEX_LAST_STEP][ion_index].DW_valence*POTENTIAL_C[int(distance)];
+						STAT.potentials_on_axis.at(INDEX_LAST_STEP).at(iz) += IONS[INDEX_LAST_STEP][ion_index].DW_valence*POTENTIAL_C[int(distance)];
 					}					
 				}
-				//cerr << "DEBUG " << STEPS[INDEX_LAST_STEP] << "\t" << i << "\t" << POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i] << endl;
 				// use microVolts for accumulation in computing the average
-				POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i]=1e-6*POTENTIALS_ON_AXIS[INDEX_LAST_STEP][i];
+				STAT.potentials_on_axis.at(INDEX_LAST_STEP).at(iz) = 1e-6*STAT.potentials_on_axis.at(INDEX_LAST_STEP).at(iz);
+			}
+			if (PRM.potential == 2) { //compute the potential using rotational simmetry
+				int num_of_div_on_r_stat=0.5*PRM.SIM_DOMAIN_WIDTH_X/double(100.00);
+				for(int iz=0; iz<num_of_div_on_z_stat; iz++){
+					double z_bin = (left_limit+double(50.0)+double(iz)*double(100.00)) * 1e-12; // [m]
+					for(int ir=0; ir<num_of_div_on_r_stat; ir++){
+						double radius = (double(50.0)+double(ir)*double(100.00)) *1e-12; // [m]
+						//external field
+						STAT.radial_potentials.at(INDEX_LAST_STEP).at(iz).at(ir) = PRM.APPLIED_POTENTIAL*(PRM.MAX_Z-1e12*z_bin)/(PRM.SIM_DOMAIN_WIDTH_Z);
+						double i_n_teta = 1.0 / 8; // inverse of the number of divisions in the radial direction
+						for (double teta = 0.0; teta < 2.0*M_PI; teta += (2.0*M_PI*i_n_teta)) {
+							x_bin = radius*cos(teta);
+							y_bin = radius*sin(teta);
+							//membrane charges
+							if(!membrane_charges.empty()){
+								for(int charge_index=0; charge_index<membrane_charges.size(); charge_index++){
+									double charge_x=membrane_charges.at(charge_index).x;
+									double charge_y=membrane_charges.at(charge_index).y;
+									double charge_z=membrane_charges.at(charge_index).z;				
+									apply_periodic_boundary(x_bin, y_bin, z_bin, charge_x, charge_y, charge_z);
+									double distance=1e12*get_distance(x_bin, y_bin, z_bin, charge_x, charge_y, charge_z);	
+									if(distance<20000){
+										STAT.radial_potentials.at(INDEX_LAST_STEP).at(iz).at(ir) += i_n_teta*membrane_charges.at(charge_index).DW_valence*POTENTIAL_C[int(distance)];
+									}	
+								}		
+							}
+							// induced charges
+							if(PRM.EPS_W!=PRM.EPS_MEM){
+								for(int surface_index=0; surface_index<NUM_OF_SURFACES; surface_index++){
+									double charge_x=SURFACES[surface_index].center_x;
+									double charge_y=SURFACES[surface_index].center_y;
+									double charge_z=SURFACES[surface_index].center_z;				
+									apply_periodic_boundary(x_bin, y_bin, z_bin, charge_x, charge_y, charge_z);
+									double distance=1e12*get_distance(x_bin, y_bin, z_bin, charge_x, charge_y, charge_z);
+									if(distance<20000){
+										double surf_charge_valence=(vector_h[surface_index]*surfaces.at(surface_index).area)/Q;
+										STAT.radial_potentials.at(INDEX_LAST_STEP).at(iz).at(ir) += i_n_teta*surf_charge_valence*POTENTIAL_C[int(distance)];
+									}	
+								}
+							}
+							// ions
+							for(int ion_index=0; ion_index<NUM_OF_IONS_IN_STEP[INDEX_LAST_STEP]; ion_index++){
+								double ion_x=IONS[INDEX_LAST_STEP][ion_index].x;
+								double ion_y=IONS[INDEX_LAST_STEP][ion_index].y;
+								double ion_z=IONS[INDEX_LAST_STEP][ion_index].z;			
+								apply_periodic_boundary(x_bin, y_bin, z_bin, ion_x, ion_y, ion_z);
+								double distance=1e12*get_distance(x_bin, y_bin, z_bin, ion_x, ion_y, ion_z);			
+								if(distance<20000){
+									STAT.radial_potentials.at(INDEX_LAST_STEP).at(iz).at(ir) += i_n_teta*IONS[INDEX_LAST_STEP][ion_index].DW_valence*POTENTIAL_C[int(distance)];
+								}					
+							}
+						}
+						// use microVolts for accumulation in computing the average
+						STAT.radial_potentials.at(INDEX_LAST_STEP).at(iz).at(ir) = 1e-6*STAT.radial_potentials.at(INDEX_LAST_STEP).at(iz).at(ir);
+					}
+				}
 			}
 		}
 	}
